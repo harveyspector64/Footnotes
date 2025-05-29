@@ -20,6 +20,13 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+        
+        body {
+            cursor: none;
+        }
+        
+        a, button, .nav-sigil, .home-sigil, .transmission-link, .watch-button {
             cursor: none;
         }
         
@@ -39,9 +46,23 @@
             border: 1px solid var(--corruption);
             position: fixed;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 10000;
             mix-blend-mode: difference;
             transition: transform 0.1s;
+            display: none; /* Hidden by default */
+        }
+        
+        body.cursor-active .cursor {
+            display: block;
+        }
+        
+        /* Fallback for when custom cursor fails */
+        body:not(.cursor-active) {
+            cursor: crosshair !important;
+        }
+        
+        body:not(.cursor-active) * {
+            cursor: auto !important;
         }
         
         .cursor::after {
