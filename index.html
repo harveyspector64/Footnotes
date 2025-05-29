@@ -1,1 +1,862 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOOTNOTES OF CREATION</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital@0;1&family=Space+Mono&display=swap');
+        
+        :root {
+            --blood: #8B0000;
+            --corruption: #FFD700;
+            --void: #0a0a0a;
+            --static: #1a1a1a;
+            --flicker: #FFF8DC;
+            --error: #FF6B6B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+        
+        body {
+            background: var(--void);
+            color: var(--flicker);
+            font-family: 'Crimson Text', serif;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--corruption);
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s;
+        }
+        
+        .cursor::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--flicker);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Loading Scripture */
+        .loading-verse {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            font-style: italic;
+            opacity: 0;
+            animation: manifest 4s ease-in-out;
+            z-index: 1000;
+            text-align: center;
+            max-width: 80vw;
+            line-height: 1.6;
+        }
+        
+        @keyframes manifest {
+            0% { opacity: 0; filter: blur(10px); }
+            50% { opacity: 0.9; filter: blur(0px); }
+            100% { opacity: 0; filter: blur(10px); transform: translate(-50%, -50%) scale(0.9); }
+        }
+        
+        /* Main Container */
+        .sanctum {
+            opacity: 0;
+            animation: reveal 2s ease-in-out 3.5s forwards;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        @keyframes reveal {
+            to { opacity: 1; }
+        }
+        
+        /* Navigation - Hidden Sigils */
+        nav {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .nav-sigil {
+            position: absolute;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            opacity: 0.3;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            pointer-events: all;
+            text-decoration: none;
+            color: var(--flicker);
+            cursor: pointer;
+        }
+        
+        .nav-sigil:hover {
+            opacity: 1;
+            color: var(--corruption);
+            transform: scale(1.1);
+            text-shadow: 0 0 20px var(--corruption);
+        }
+        
+        .nav-sigil.glitch:hover {
+            animation: glitch 0.3s infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+        
+        /* Navigation Positions */
+        .nav-chapters { top: 10%; left: 5%; }
+        .nav-fragments { top: 15%; right: 3%; transform: rotate(90deg); transform-origin: right center; }
+        .nav-artifacts { bottom: 10%; left: 8%; }
+        .nav-source { bottom: 8%; right: 5%; }
+        .nav-transmissions { top: 50%; left: -30px; transform: rotate(-90deg); transform-origin: center; }
+        
+        /* Central Testament */
+        .testament {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        
+        .testament h1 {
+            font-family: 'Crimson Text', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .testament h1::before {
+            content: 'FOOTNOTES OF CREATION';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            color: var(--blood);
+            opacity: 0;
+            animation: flicker 8s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 0; }
+            5% { opacity: 0.1; transform: translateX(1px); }
+            5.5% { opacity: 0; }
+            10% { opacity: 0.1; transform: translateX(-1px); }
+            10.5% { opacity: 0; }
+        }
+        
+        .verse-container {
+            margin-top: 3rem;
+            position: relative;
+            padding: 2rem;
+        }
+        
+        .daily-verse {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        
+        .verse-citation {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Page Sections */
+        .page-section {
+            display: none;
+            min-height: 100vh;
+            padding: 80px 20px;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .page-header {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            color: var(--corruption);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        /* Home Link */
+        .home-sigil {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            opacity: 0.3;
+            transition: all 0.3s;
+            cursor: pointer;
+            z-index: 200;
+        }
+        
+        .home-sigil:hover {
+            opacity: 1;
+            color: var(--corruption);
+        }
+        
+        /* Chapters Page */
+        .chapters-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .chapter-entry {
+            border: 1px solid transparent;
+            padding: 30px;
+            position: relative;
+            transition: all 0.5s;
+            background: rgba(26, 26, 26, 0.5);
+        }
+        
+        .chapter-entry:hover {
+            border-color: var(--corruption);
+            background: rgba(139, 0, 0, 0.1);
+        }
+        
+        .chapter-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--corruption);
+            margin-bottom: 10px;
+        }
+        
+        .chapter-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+        
+        .chapter-excerpt {
+            font-style: italic;
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .chapter-status {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--error);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .watch-button {
+            background: none;
+            border: 1px solid var(--flicker);
+            color: var(--flicker);
+            padding: 8px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .watch-button:hover {
+            background: var(--corruption);
+            color: var(--void);
+            border-color: var(--corruption);
+        }
+        
+        /* Fragments Page */
+        .fragments-mosaic {
+            max-width: 1400px;
+            margin: 0 auto;
+            columns: 3;
+            column-gap: 20px;
+        }
+        
+        .fragment-cell {
+            break-inside: avoid;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(26, 26, 26, 0.5);
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .fragment-cell:hover {
+            border-color: var(--corruption);
+            transform: scale(1.02);
+        }
+        
+        .fragment-timestamp {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--corruption);
+            margin-bottom: 10px;
+        }
+        
+        .fragment-text {
+            font-style: italic;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+        
+        /* Artifacts Page */
+        .artifacts-gallery {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .artifact-frame {
+            position: relative;
+            padding-bottom: 100%;
+            background: var(--static);
+            border: 1px solid var(--corruption);
+            overflow: hidden;
+        }
+        
+        .artifact-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(0.2) contrast(1.2);
+            transition: filter 0.5s;
+        }
+        
+        .artifact-frame:hover .artifact-image {
+            filter: sepia(0) contrast(1.3);
+        }
+        
+        .artifact-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--corruption);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .artifact-frame:hover .artifact-label {
+            transform: translateY(0);
+        }
+        
+        /* Source Page */
+        .source-codex {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(26, 26, 26, 0.3);
+            border: 1px solid var(--static);
+        }
+        
+        .source-warning {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--error);
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px dashed var(--error);
+        }
+        
+        .source-text {
+            line-height: 2;
+            position: relative;
+        }
+        
+        .source-text p {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .redacted {
+            background: var(--flicker);
+            color: var(--flicker);
+            padding: 0 5px;
+            position: relative;
+        }
+        
+        .redacted:hover {
+            color: var(--void);
+        }
+        
+        .margin-note {
+            position: absolute;
+            right: -150px;
+            width: 120px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--blood);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .source-text p:hover .margin-note {
+            opacity: 0.7;
+        }
+        
+        /* Transmissions Page */
+        .transmissions-hub {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .transmission-link {
+            display: block;
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid var(--static);
+            text-decoration: none;
+            color: var(--flicker);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .transmission-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--corruption);
+            opacity: 0.1;
+            transition: left 0.5s;
+        }
+        
+        .transmission-link:hover::before {
+            left: 0;
+        }
+        
+        .transmission-link:hover {
+            border-color: var(--corruption);
+            color: var(--corruption);
+        }
+        
+        .transmission-handle {
+            display: block;
+            margin-top: 10px;
+            opacity: 0.5;
+            font-size: 0.7rem;
+        }
+        
+        /* Digital Decay Effects */
+        .decay-line {
+            position: fixed;
+            height: 1px;
+            background: var(--corruption);
+            opacity: 0.1;
+            animation: scan 20s infinite linear;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Error Messages */
+        .error-divine {
+            position: fixed;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--blood);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .error-divine.active {
+            animation: error-flash 2s;
+        }
+        
+        @keyframes error-flash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Hidden Revelation */
+        .hidden-text {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--static);
+            max-width: 200px;
+            line-height: 1.4;
+            pointer-events: none;
+        }
+        
+        /* Mobile Apocryphon */
+        @media (max-width: 768px) {
+            .nav-sigil {
+                font-size: 0.7rem;
+            }
+            
+            .nav-fragments { 
+                right: 10px; 
+                transform: rotate(0deg);
+                top: auto;
+                bottom: 50%;
+            }
+            
+            .nav-transmissions { 
+                transform: rotate(0deg);
+                left: 10px;
+                top: 30%;
+            }
+            
+            .testament h1 {
+                font-size: 2rem;
+            }
+            
+            .daily-verse {
+                font-size: 1rem;
+            }
+            
+            .fragments-mosaic {
+                columns: 1;
+            }
+            
+            .margin-note {
+                position: static;
+                width: 100%;
+                margin-top: 10px;
+                opacity: 0.5;
+            }
+        }
+        
+        /* Secret Mechanism */
+        #dap-interface {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid var(--corruption);
+            padding: 2rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            z-index: 2000;
+            transition: transform 0.5s;
+            max-width: 90vw;
+            text-align: center;
+        }
+        
+        #dap-interface.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .close-dap {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--corruption);
+            font-size: 1.5rem;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+        
+        .close-dap:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    
+    <!-- Loading Scripture -->
+    <div class="loading-verse" id="loading-verse">
+        "The Earth was without Form, and void, much like the Crown-Prince's Skull after a Night at the Leipzig Gaming-Tables"
+    </div>
+    
+    <!-- Digital Decay -->
+    <div class="decay-line" style="top: 20%; animation-delay: 0s;"></div>
+    <div class="decay-line" style="top: 50%; animation-delay: 7s;"></div>
+    <div class="decay-line" style="top: 80%; animation-delay: 14s;"></div>
+    
+    <!-- Home Link -->
+    <div class="home-sigil" data-section="home" style="display: none;">⟵ RETURN</div>
+    
+    <!-- Navigation Sigils -->
+    <nav id="main-nav">
+        <a href="#chapters" class="nav-sigil nav-chapters glitch" data-section="chapters">CHAPTERS</a>
+        <a href="#fragments" class="nav-sigil nav-fragments" data-section="fragments">FRAGMENTS</a>
+        <a href="#artifacts" class="nav-sigil nav-artifacts glitch" data-section="artifacts">ARTIFACTS</a>
+        <a href="#source" class="nav-sigil nav-source" data-section="source">SOURCE</a>
+        <a href="#transmissions" class="nav-sigil nav-transmissions glitch" data-section="transmissions">TRANSMISSIONS</a>
+    </nav>
+    
+    <!-- Main Sanctum -->
+    <div class="sanctum" id="home">
+        <main class="testament">
+            <h1>FOOTNOTES OF CREATION</h1>
+            
+            <div class="verse-container">
+                <p class="daily-verse" id="daily-verse">
+                    "Rules are Inertia, doll. You wanna spend Eternity naming Geraniums? Or d'you wanna bite the Apple, crack the Cosmic Code, and finally figure out why the Dodo's got a Look in its Eye like it's already seen the Flood?"
+                </p>
+                <p class="verse-citation">— The Serpent, Contract #3:13</p>
+            </div>
+        </main>
+    </div>
+    
+    <!-- CHAPTERS Section -->
+    <section class="page-section" id="chapters-section">
+        <h2 class="page-header">RECOVERED TRANSMISSIONS // GENESIS PROTOCOL</h2>
+        <div class="chapters-grid">
+            <div class="chapter-entry">
+                <div class="chapter-status">[STREAMING]</div>
+                <div class="chapter-number">CHAPTER_01.MP4</div>
+                <h3 class="chapter-title">In the Before</h3>
+                <p class="chapter-excerpt">"The Void not so much empty as preoccupied, clatter'd with the Spectres of Possibility, all elbows and angles..."</p>
+                <button class="watch-button">ACCESS RECORDING</button>
+            </div>
+            
+            <div class="chapter-entry">
+                <div class="chapter-status">[STREAMING]</div>
+                <div class="chapter-number">CHAPTER_02.MP4</div>
+                <h3 class="chapter-title">The Garden Incident</h3>
+                <p class="chapter-excerpt">"Enter Adam: a lanky Homunculus knead'd from Red Clay and leftover Stardust, still damp behind the Ears..."</p>
+                <button class="watch-button">ACCESS RECORDING</button>
+            </div>
+            
+            <div class="chapter-entry">
+                <div class="chapter-status">[STREAMING]</div>
+                <div class="chapter-number">CHAPTER_03.MP4</div>
+                <h3 class="chapter-title">The Serpent's Pitch</h3>
+                <p class="chapter-excerpt">"Knowledge. Agency. The kind of Inside Dope that'll make you question why you're taking Orders from a Sky-Papa..."</p>
+                <button class="watch-button">ACCESS RECORDING</button>
+            </div>
+            
+            <div class="chapter-entry">
+                <div class="chapter-status">[STREAMING]</div>
+                <div class="chapter-number">CHAPTER_04.MP4</div>
+                <h3 class="chapter-title">East of Eden</h3>
+                <p class="chapter-excerpt">"The First Harvest was a fiasco foretold. Cain's Offering rejected by the Altar's newly installed Divine Approval Portal..."</p>
+                <button class="watch-button">ACCESS RECORDING</button>
+            </div>
+            
+            <div class="chapter-entry">
+                <div class="chapter-status">[STREAMING]</div>
+                <div class="chapter-number">CHAPTER_05.MP4</div>
+                <h3 class="chapter-title">The City of Enoch</h3>
+                <p class="chapter-excerpt">"Charter's simple: No Altars. No Algorithms. And definitely no fucking Hymnals..."</p>
+                <button class="watch-button">ACCESS RECORDING</button>
+            </div>
+            
+            <div class="chapter-entry">
+                <div class="chapter-status">[STREAMING]</div>
+                <div class="chapter-number">CHAPTER_06.MP4</div>
+                <h3 class="chapter-title">The Watchers' Descent</h3>
+                <p class="chapter-excerpt">"Heaven's been silent since Eden's Gates clos'd. We are all Exiles now..."</p>
+                <button class="watch-button">ACCESS RECORDING</button>
+            </div>
+            
+            <div class="chapter-entry">
+                <div class="chapter-status">[CORRUPTED]</div>
+                <div class="chapter-number">CHAPTER_07.MP4</div>
+                <h3 class="chapter-title">Protocol E-R-A-S-E</h3>
+                <p class="chapter-excerpt">"The Ark wasn't a life Raft. It was a language. A viral Meme. A Bootleg of the original Creation..."</p>
+                <button class="watch-button">PROCESSING...</button>
+            </div>
+            
+            <div class="chapter-entry">
+                <div class="chapter-status">[PENDING]</div>
+                <div class="chapter-number">CHAPTER_08.MP4</div>
+                <h3 class="chapter-title">After the Waters</h3>
+                <p class="chapter-excerpt">[METADATA NOT FOUND]</p>
+                <button class="watch-button" disabled>UNAVAILABLE</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FRAGMENTS Section -->
+    <section class="page-section" id="fragments-section">
+        <h2 class="page-header">UNAUTHORIZED CLIPS // SYSTEM CACHE</h2>
+        <div class="fragments-mosaic">
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:03:14</div>
+                <p class="fragment-text">"The DAP-9000™ chirp'd politely: Alert: Unauthorized Audit Initiated by User: CAIN.ABEL.KILLER.ENOCH.MAYOR"</p>
+            </div>
+            
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:07:42</div>
+                <p class="fragment-text">"Eve's smile was Eve's smile—the Smile of Women who understand Creation as ongoing Project rather than finish'd Product."</p>
+            </div>
+            
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:12:33</div>
+                <p class="fragment-text">"The Serpent's gold Tooth glint'd. 'Every Garden needs a Serpent. Every Flood needs an Ark. Every System needs someone willing to break it.'"</p>
+            </div>
+            
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:18:09</div>
+                <p class="fragment-text">"Abel's blood seep'd into the Soil, which drank it with the desperation of a Relic Addict."</p>
+            </div>
+            
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:24:55</div>
+                <p class="fragment-text">"We build what we want. We trade what we choose. We create without Permission."</p>
+            </div>
+            
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:31:18</div>
+                <p class="fragment-text">"The Watchers' Wings snapp'd open in unison, sixteen Shadows stretching across the face of Mount Hermon like the Hands of a broken Clock."</p>
+            </div>
+            
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:45:27</div>
+                <p class="fragment-text">"Noah brought the Axe down again and again. Until the DAP-9000™ lay in Pieces—not metaphorical but actual shards of divine Technology."</p>
+            </div>
+            
+            <div class="fragment-cell">
+                <div class="fragment-timestamp">TIMESTAMP: 00:52:41</div>
+                <p class="fragment-text">"Next time, build a ship that forgets how to drown."</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ARTIFACTS Section -->
+    <section class="page-section" id="artifacts-section">
+        <h2 class="page-header">RECOVERED ARTIFACTS // VISUAL EVIDENCE</h2>
+        <div class="artifacts-gallery">
+            <div class="artifact-frame">
+                <div class="artifact-image" style="background: linear-gradient(45deg, var(--blood), var(--void));"></div>
+                <div class="artifact-label">EXHIBIT_001: The First Algorithm</div>
+            </div>
+            
+            <div class="artifact-frame">
+                <div class="artifact-image" style="background: radial-gradient(circle, var(--corruption), var(--void));"></div>
+                <div class="artifact-label">EXHIBIT_002: Eden's Last Apple</div>
+            </div>
+            
+            <div class="artifact-frame">
+                <div class="artifact-image" style="background: conic-gradient(var(--flicker), var(--static), var(--flicker));"></div>
+                <div class="artifact-label">EXHIBIT_003: Cain's Blueprint</div>
+            </div>
+            
+            <div class="artifact-frame">
+                <div class="artifact-image" style="background: linear-gradient(180deg, var(--void), var(--blood));"></div>
+                <div class="artifact-label">EXHIBIT_004: The Mark (Enhanced)</div>
+            </div>
+            
+            <div class="artifact-frame">
+                <div class="artifact-image" style="background: repeating-linear-gradient(45deg, var(--static), var(--static) 10px, var(--corruption) 10px, var(--corruption) 20px);"></div>
+                <div class="artifact-label">EXHIBIT_005: Watcher Wings (Fragment)</div>
+            </div>
+            
+            <div class="artifact-frame">
+                <div class="artifact-image" style="background: radial-gradient(ellipse at top, var(--flicker), var(--void));"></div>
+                <div class="artifact-label">EXHIBIT_006: Noah's Fever Dream</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SOURCE Section -->
+    <section class="page-section" id="source-section">
+        <h2 class="page-header">THE APOCRYPHA // DECODED TRANSMISSIONS</h2>
+        <div class="source-codex">
+            <div class="source-warning">
+                WARNING: The following text has been recovered from corrupted DAP-9000™ memory cores. 
+                Anthropic assumes no responsibility for theological side effects.
+                Read at your own existential risk.
+            </div>
+            
+            <div class="source-text">
+                <p>
+                    In the Before, which is to say the Never-Quite-But-Almost, there roll'd a sort of Clamor, 
+                    a Cosmic Mutter, a Broth of Unknowing simmer'd beneath the Lid of Eternity...
+                    <span class="margin-note">The Serpent was here</span>
+                </p>
+                
+                <p>
+                    The Deep, aye, the Deep— oily, inky, a primordial Ooze that clung to Itself like a 
+                    Parliament of Quarreling Ministers,— and over this roil'd the Spirit-Wind, 
+                    <span class="redacted">a zephyr with a taste for Dramatics</span>
+                </p>
+                
+                <p>
+                    "Let there be Light," quoth the Voice— tho' whether 'twas a Boom from On High or the 
+                    creak of a Cork being pull'd from a long-buried Amphora, none could say.
+                    <span class="margin-note">Citation needed</span>
+                </p>
+                
+                <p>
+                    And there was Light: a gout of radiance, a golden Belch that split the Dark like a 
+                    Butcher's Cleaver, sending Shadows scuttling to the Corners of Existence, where they'd 
+                    huddle and hiss, plotting their eventual Return.
+                </p>
+                
+                <p style="text-align: center; margin: 40px 0; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--corruption);">
+                    [TRANSMISSION INTERRUPTED - FILE CONTINUES IN RESTRICTED ARCHIVE]
+                </p>
+            </div>
