@@ -30,13 +30,34 @@
             cursor: none;
         }
         
-        body {
-            background: var(--void);
-            color: var(--flicker);
-            font-family: 'Crimson Text', serif;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
+        /* Add data corruption effect */
+        @keyframes dataCorruption {
+            0%, 100% { opacity: 0; }
+            10% { opacity: 0.1; transform: translateX(2px); }
+            11% { opacity: 0; }
+            20% { opacity: 0.15; transform: translateX(-1px); }
+            21% { opacity: 0; }
+            60% { opacity: 0.05; transform: translateY(1px); }
+            61% { opacity: 0; }
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 215, 0, 0.03) 2px,
+                rgba(255, 215, 0, 0.03) 4px
+            );
+            animation: dataCorruption 10s infinite;
+            pointer-events: none;
+            z-index: 1;
         }
         
         /* Custom Cursor */
@@ -76,7 +97,7 @@
             transform: translate(-50%, -50%);
         }
         
-        /* Loading Scripture */
+        /* Loading Scripture - refined */
         .loading-verse {
             position: fixed;
             top: 50%;
@@ -90,6 +111,7 @@
             text-align: center;
             max-width: 80vw;
             line-height: 1.6;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
         }
         
         @keyframes manifest {
@@ -169,6 +191,12 @@
             padding: 2rem;
         }
         
+        /* Add subtle breathing effect to main title */
+        @keyframes breathe {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.95; transform: scale(0.995); }
+        }
+        
         .testament h1 {
             font-family: 'Crimson Text', serif;
             font-size: clamp(2rem, 5vw, 4rem);
@@ -176,6 +204,7 @@
             letter-spacing: 0.1em;
             margin-bottom: 2rem;
             position: relative;
+            animation: breathe 4s ease-in-out infinite;
         }
         
         .testament h1::before {
@@ -202,6 +231,41 @@
             margin-top: 3rem;
             position: relative;
             padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .verse-container:hover {
+            transform: scale(1.02);
+        }
+        
+        .verse-container::before {
+            content: '◄';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: var(--corruption);
+            font-size: 1.5rem;
+        }
+        
+        .verse-container::after {
+            content: '►';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: var(--corruption);
+            font-size: 1.5rem;
+        }
+        
+        .verse-container:hover::before,
+        .verse-container:hover::after {
+            opacity: 0.5;
         }
         
         .daily-verse {
@@ -681,7 +745,7 @@
         <main class="testament">
             <h1>FOOTNOTES OF CREATION</h1>
             
-            <div class="verse-container">
+            <div class="verse-container" title="Click for next revelation">
                 <p class="daily-verse" id="daily-verse">
                     "Rules are Inertia, doll. You wanna spend Eternity naming Geraniums? Or d'you wanna bite the Apple, crack the Cosmic Code, and finally figure out why the Dodo's got a Look in its Eye like it's already seen the Flood?"
                 </p>
