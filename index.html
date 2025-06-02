@@ -1,221 +1,741 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Footnotes of Creation • Archive</title>
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<style>
-/* ------------- 1. RESET & ROOT ----------------- */
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0b0b0c;            /* deep charcoal */
-  --card:#151516;
-  --stroke:#333;
-  --txt:#d7d7d7;
-  --muted:#888;
-  --accent:#53ff00;        /* CRT-green */
-  --ease:cubic-bezier(.25,.1,.25,1);
-  font-family: "Inter", system-ui, sans-serif;
-}
-html,body{height:100%;scroll-behavior:smooth;background:var(--bg);color:var(--txt)}
-body.no-scroll{overflow:hidden}
-
-/* ------------- 2. CUSTOM CURSOR ---------------- */
-#cursor,#follower{
-  position:fixed;top:0;left:0;pointer-events:none;
-  width:8px;height:8px;border-radius:50%;
-  background:var(--accent);mix-blend-mode:difference;z-index:2000}
-#follower{width:24px;height:24px;transition:transform .15s var(--ease)}
-.hidden-cursor *{cursor:none}
-
-/* ------------- 3. NAV / FILTER ----------------- */
-header{
-  position:fixed;top:0;left:0;width:100%;z-index:1000;
-  background:#000a;backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:.75rem 1rem;border-bottom:1px solid var(--stroke)}
-header h1{font-size:.85rem;letter-spacing:2px;color:var(--accent)}
-#filters{display:flex;gap:.8rem;font-size:.8rem}
-#filters button{
-  background:none;border:none;color:var(--txt);padding:.2rem .5rem;
-  cursor:pointer;font-weight:600;letter-spacing:1px}
-#filters button.active{color:var(--accent)}
-/* search icon placeholder */
-header .search{width:16px;height:16px;border:1px solid var(--accent)}
-
-/* ------------- 4. MAIN GRID -------------------- */
-main{padding:5.5rem 2vw}
-.grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:1.5rem}
-.card{
-  position:relative;background:var(--card);border:1px solid var(--stroke);
-  cursor:pointer;transition:transform .3s var(--ease);}
-.card:hover{transform:translateY(-4px)}
-.card img{
-  width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
-.card .meta{padding:.75rem;font-size:.75rem}
-.card .meta h3{font-size:1rem;font-weight:600;margin-bottom:.3rem}
-.tag{font-size:.65rem;color:var(--muted);text-transform:uppercase;}
-
-/* ------------- 5. OVERLAY PANEL ---------------- */
-#panel{
-  position:fixed;top:0;right:-100%;height:100%;width:40%;
-  min-width:300px;background:#111;box-shadow:0 0 40px #000a;
-  overflow-y:auto;transition:right .6s var(--ease);z-index:1100;
-  display:flex;flex-direction:column}
-#panel.open{right:0}
-#panel header{display:flex;justify-content:space-between;align-items:center;
-  padding:1rem;border-bottom:1px solid var(--stroke)}
-#panel header h2{font-size:1rem;color:var(--accent)}
-.close-btn{background:none;border:none;font-size:1.2rem;color:var(--txt);cursor:pointer}
-#panel .body{padding:1.25rem;font-size:.9rem;line-height:1.6}
-#panel .body video,#panel .body iframe{width:100%;aspect-ratio:16/9;margin:.7rem 0;border:none}
-#panel .footnotes{margin-top:1rem;border-top:1px dashed var(--stroke);padding-top:.7rem;font-size:.8rem;color:var(--muted)}
-
-/* ------------- 6. RESPONSIVE ------------------- */
-@media(max-width:680px){
-  #panel{width:100%}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footnotes of Creation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg: #0a0a0a;
+            --surface: #0f0f0f;
+            --text: #f5f5f5;
+            --text-dim: #888;
+            --accent: #ff3333;
+            --border: rgba(255,255,255,0.08);
+            --gutter: 2px;
+        }
+        
+        ::selection {
+            background: var(--accent);
+            color: var(--bg);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 1.6;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Custom Cursor */
+        body {
+            cursor: none;
+        }
+        
+        .cursor {
+            width: 10px;
+            height: 10px;
+            background: var(--text);
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            border-radius: 50%;
+            transition: transform 0.15s ease-out;
+        }
+        
+        .cursor.hover {
+            transform: scale(3);
+        }
+        
+        /* Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px;
+            background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 100%;
+        }
+        
+        .logo {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--text);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, rgba(255,51,51,0.1) 0%, transparent 70%);
+        }
+        
+        .hero-title {
+            font-family: 'EB Garamond', serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 400;
+            text-align: center;
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-out 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        /* Grid Container */
+        .grid-container {
+            width: 100%;
+            padding: var(--gutter);
+            background: var(--bg);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--gutter);
+            width: 100%;
+        }
+        
+        /* Grid Items */
+        .grid-item {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1;
+        }
+        
+        .grid-item:hover::before {
+            opacity: 1;
+        }
+        
+        .grid-item:hover {
+            transform: scale(0.98);
+        }
+        
+        /* Image/Video Items */
+        .media-item {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .media-item img,
+        .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .media-item img {
+            transition: opacity 0.3s;
+        }
+        
+        .media-item video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .media-item.playing img {
+            opacity: 0;
+        }
+        
+        .media-item.playing video {
+            opacity: 1;
+        }
+        
+        /* Text Items */
+        .text-item {
+            padding: 25px;
+            height: 100%;
+            display: flex;
+            align-items: flex-start;
+            font-family: 'EB Garamond', serif;
+            font-size: 16px;
+            line-height: 1.4;
+            color: var(--text-dim);
+            transition: color 0.3s;
+        }
+        
+        .text-item:hover {
+            color: var(--text);
+        }
+        
+        /* Quote Items */
+        .quote-item {
+            padding: 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255,51,51,0.05) 0%, transparent 100%);
+        }
+        
+        .quote-text {
+            font-family: 'EB Garamond', serif;
+            font-size: 20px;
+            font-style: italic;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .quote-attribution {
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        
+        /* Data Items */
+        .data-item {
+            padding: 20px;
+            font-family: 'Inter', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            letter-spacing: 0.05em;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,51,51,0.03) 2px,
+                rgba(255,51,51,0.03) 4px
+            );
+        }
+        
+        /* Metadata */
+        .item-meta {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: var(--text);
+            background: var(--bg);
+            padding: 5px 10px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            z-index: 2;
+        }
+        
+        .grid-item:hover .item-meta {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            backdrop-filter: blur(20px);
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .modal-close::before,
+        .modal-close::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 1px;
+            background: var(--text);
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        
+        .modal-close::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+        
+        /* Loading State */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s;
+        }
+        
+        .loading-text {
+            font-family: 'EB Garamond', serif;
+            font-size: 16px;
+            color: var(--text-dim);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .cursor {
+                display: none;
+            }
+            
+            body {
+                cursor: auto;
+            }
+        }
+    </style>
 </head>
-<body class="hidden-cursor">
-
-<!--  1. NAV BAR -->
-<header>
-  <h1>FOC • ARCHIVE</h1>
-  <nav id="filters" aria-label="Filter">
-    <button data-filter="all" class="active">all</button>
-    <button data-filter="vision">vision</button>
-    <button data-filter="text">text</button>
-    <button data-filter="promo">promo</button>
-  </nav>
-  <div class="search" aria-hidden="true"></div>
-</header>
-
-<!--  2. GRID -->
-<main>
-  <section class="grid" id="grid">
-
-    <!--  CARD TEMPLATE  -->
-    <article class="card" data-tags="vision promo">
-      <img src="https://placehold.co/600x400/ff2e2e/000?text=Genesis+Poster" alt="Genesis Poster placeholder">
-      <div class="meta">
-        <span class="tag">Vision</span>
-        <h3>Genesis Key-Art</h3>
-        <span class="date">c. Day 0</span>
-      </div>
-    </article>
-
-    <article class="card" data-tags="text">
-      <img src="https://placehold.co/600x400/1e90ff/000?text=Chapter+Excerpt" alt="Text excerpt placeholder">
-      <div class="meta">
-        <span class="tag">Text</span>
-        <h3>Clamor in the Void</h3>
-        <span class="date">Fragment #134</span>
-      </div>
-    </article>
-
-    <article class="card" data-tags="promo">
-      <img src="https://placehold.co/600x400/00af64/000?text=Trailer+Thumb" alt="Video trailer placeholder">
-      <div class="meta">
-        <span class="tag">Promo</span>
-        <h3>30-sec Teaser</h3>
-        <span class="date">Now Playing</span>
-      </div>
-    </article>
-
-    <!--  Duplicate / add as many cards as you like with varying data-tags -->
-  </section>
-</main>
-
-<!--  3. SLIDE-IN PANEL -->
-<aside id="panel" aria-hidden="true">
-  <header>
-    <h2 id="panelTitle">Title</h2>
-    <button class="close-btn" aria-label="Close panel">&times;</button>
-  </header>
-  <div class="body" id="panelBody">
-    <!-- filled dynamically -->
-  </div>
-</aside>
-
-<!--  4. JS -->
-<script>
-/* ---------- CUSTOM CURSOR ---------- */
-const cursor = document.getElementById('cursor');
-const follower = document.getElementById('follower');
-let mouseX=0, mouseY=0;
-window.addEventListener('mousemove', e=>{
-  mouseX = e.clientX; mouseY = e.clientY;
-  cursor.style.transform = `translate(${mouseX-4}px,${mouseY-4}px)`;
-});
-function lerp(a,b,n){ return(a+(b-a)*n);}
-let followX=0, followY=0;
-function animate(){ 
-  followX = lerp(followX, mouseX-12, 0.15);
-  followY = lerp(followY, mouseY-12, 0.15);
-  follower.style.transform=`translate(${followX}px,${followY}px)`; 
-  requestAnimationFrame(animate);
-}
-animate();
-
-/* ---------- FILTER LOGIC ---------- */
-const buttons = document.querySelectorAll('#filters button');
-const cards   = document.querySelectorAll('.card');
-buttons.forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    buttons.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.filter;
-    cards.forEach(c=>{
-      c.style.display = (f==='all'||c.dataset.tags.includes(f))?'block':'none';
-    });
-  });
-});
-
-/* ---------- PANEL LOGIC ---------- */
-const panel      = document.getElementById('panel');
-const panelTitle = document.getElementById('panelTitle');
-const panelBody  = document.getElementById('panelBody');
-function openPanel({title,html}){
-  panelTitle.textContent = title;
-  panelBody.innerHTML = html;
-  panel.classList.add('open');
-  panel.setAttribute('aria-hidden','false');
-  document.body.classList.add('no-scroll');
-}
-function closePanel(){
-  panel.classList.remove('open');
-  panel.setAttribute('aria-hidden','true');
-  document.body.classList.remove('no-scroll');
-}
-panel.querySelector('.close-btn').addEventListener('click', closePanel);
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePanel();});
-
-/* ---------- CARD CLICK HANDLERS + DUMMY CONTENT ---------- */
-cards.forEach(c=>{
-  c.addEventListener('click',()=>{
-    const tag = c.dataset.tags.split(' ')[0];
-    let html  = '';
-    if(tag==='vision'){
-      html = `<p>High-resolution poster art that hints at the cosmic ‘broth of unknowing’. Replace this <em>img</em> with your key-art asset.</p>
-              <img src="https://placehold.co/800x600/ff2e2e/000?text=Full+Poster" alt="">
-              <div class="footnotes">Ⓕ Footnote 42 : Poster printed on theoretical photon-paper.</div>`;
-    }else if(tag==='text'){
-      html = `<p><strong>Excerpt&nbsp;— Clamor in the Void</strong></p>
-              <p>“In the Before, which is to say the Never-Quite-But-Almost, there roll’d a sort of Clamor…”</p>
-              <div class="footnotes">See also: <em>Drunkard’s Tall Tale</em>.</div>`;
-    }else{
-      html = `<div class="responsive-video">
-                <iframe src="https://www.youtube.com/embed/TlP5WIxVirU" title="Teaser"></iframe>
-              </div>
-              <p>Placeholder teaser clip. Swap the iframe src for your real promo video.</p>`;
-    }
-    openPanel({title:c.querySelector('h3').textContent,html});
-  });
-});
-</script>
+<body>
+    <!-- Loading -->
+    <div class="loading">
+        <div class="loading-text">Loading fragments...</div>
+    </div>
+    
+    <!-- Cursor -->
+    <div class="cursor"></div>
+    
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">FOOTNOTES OF CREATION</div>
+            <ul class="nav-links">
+                <li><a href="#info">INFO</a></li>
+                <li><a href="#archive">ARCHIVE</a></li>
+                <li><a href="#contact">CONTACT</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <h1 class="hero-title">Footnotes<br>of Creation</h1>
+    </section>
+    
+    <!-- Grid -->
+    <section class="grid-container">
+        <div class="grid">
+            <!-- Media item with still-to-video -->
+            <div class="grid-item">
+                <div class="media-item" data-video="true">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=400&fit=crop" alt="">
+                    <video loop muted playsinline>
+                        <source src="video1.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item-meta">01 / GENESIS</div>
+            </div>
+            
+            <!-- Text excerpt -->
+            <div class="grid-item">
+                <div class="text-item">
+                    "In the Before, which is to say the Never-Quite-But-Almost, there roll'd a sort of Clamor, a Cosmic Mutter..."
+                </div>
+                <div class="item-meta">EXCERPT / CH.1</div>
+            </div>
+            
+            <!-- Quote -->
+            <div class="grid-item">
+                <div class="quote-item">
+                    <div class="quote-text">"Rules are Inertia, doll."</div>
+                    <div class="quote-attribution">The Serpent</div>
+                </div>
+            </div>
+            
+            <!-- Media -->
+            <div class="grid-item">
+                <div class="media-item">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" alt="">
+                </div>
+                <div class="item-meta">CAIN / PORTRAIT</div>
+            </div>
+            
+            <!-- Data visualization -->
+            <div class="grid-item">
+                <div class="data-item">
+                    DAP-9000™<br>
+                    PROTOCOL E-R-A-S-E<br>
+                    ▓▓▓▓▓▓▓▓░░ 82%
+                </div>
+            </div>
+            
+            <!-- Text -->
+            <div class="grid-item">
+                <div class="text-item">
+                    "The Earth was without Form, and void, much like the Crown-Prince's Skull after a Night at the Leipzig Gaming-Tables..."
+                </div>
+                <div class="item-meta">VOID / TEXT</div>
+            </div>
+            
+            <!-- Media with video -->
+            <div class="grid-item">
+                <div class="media-item" data-video="true">
+                    <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=400&fit=crop" alt="">
+                    <video loop muted playsinline>
+                        <source src="video2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item-meta">SERPENT / MOTION</div>
+            </div>
+            
+            <!-- Quote -->
+            <div class="grid-item">
+                <div class="quote-item">
+                    <div class="quote-text">"Creation isn't finished with us yet."</div>
+                    <div class="quote-attribution">Eve</div>
+                </div>
+            </div>
+            
+            <!-- Media -->
+            <div class="grid-item">
+                <div class="media-item">
+                    <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=400&fit=crop" alt="">
+                </div>
+                <div class="item-meta">ARCHIVE / 004</div>
+            </div>
+            
+            <!-- Data -->
+            <div class="grid-item">
+                <div class="data-item">
+                    SYSTEM ERROR<br>
+                    eden.exe corrupted<br>
+                    ████████████
+                </div>
+            </div>
+            
+            <!-- Text -->
+            <div class="grid-item">
+                <div class="text-item">
+                    "Heaven's Memo had been quite clear: the Mark'd One shall know neither Death nor Harvest..."
+                </div>
+                <div class="item-meta">MARK / CAIN</div>
+            </div>
+            
+            <!-- Media -->
+            <div class="grid-item">
+                <div class="media-item">
+                    <img src="https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=400&h=400&fit=crop" alt="">
+                </div>
+                <div class="item-meta">FLOOD / DOC</div>
+            </div>
+            
+            <!-- Quote -->
+            <div class="grid-item">
+                <div class="quote-item">
+                    <div class="quote-text">"Every Garden needs a Serpent."</div>
+                    <div class="quote-attribution">Truth</div>
+                </div>
+            </div>
+            
+            <!-- Media with video -->
+            <div class="grid-item">
+                <div class="media-item" data-video="true">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop" alt="">
+                    <video loop muted playsinline>
+                        <source src="video3.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="item-meta">ARK / SEQUENCE</div>
+            </div>
+            
+            <!-- Text -->
+            <div class="grid-item">
+                <div class="text-item">
+                    "The Nephilim roar'd—the Sound like Infants wailing in the Bodies of Colossi..."
+                </div>
+                <div class="item-meta">GIANTS / CH.6</div>
+            </div>
+            
+            <!-- Data -->
+            <div class="grid-item">
+                <div class="data-item">
+                    WATCHERS.LOG<br>
+                    Status: FALLEN<br>
+                    Location: UNKNOWN
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Modal -->
+    <div class="modal">
+        <div class="modal-close"></div>
+        <div class="modal-content"></div>
+    </div>
+    
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        function animateCursor() {
+            const distX = mouseX - cursorX;
+            const distY = mouseY - cursorY;
+            
+            cursorX += distX * 0.1;
+            cursorY += distY * 0.1;
+            
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+        
+        // Cursor hover states
+        const hoverElements = document.querySelectorAll('a, .grid-item, button');
+        hoverElements.forEach(elem => {
+            elem.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            elem.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+        
+        // Loading screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading').style.opacity = '0';
+                setTimeout(() => {
+                    document.querySelector('.loading').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+        
+        // Smooth scroll after hero
+        document.querySelector('.hero').addEventListener('click', () => {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Grid item interactions - still to video
+        document.querySelectorAll('.media-item[data-video="true"]').forEach(item => {
+            const video = item.querySelector('video');
+            if (!video) return;
+            
+            item.closest('.grid-item').addEventListener('mouseenter', () => {
+                video.play();
+                item.classList.add('playing');
+            });
+            
+            item.closest('.grid-item').addEventListener('mouseleave', () => {
+                video.pause();
+                video.currentTime = 0;
+                item.classList.remove('playing');
+            });
+        });
+        
+        // Modal functionality
+        const modal = document.querySelector('.modal');
+        const modalContent = document.querySelector('.modal-content');
+        const modalClose = document.querySelector('.modal-close');
+        
+        document.querySelectorAll('.grid-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Don't open modal for video items on hover
+                if (item.querySelector('.media-item[data-video="true"]') && e.target.closest('.media-item')) {
+                    return;
+                }
+                
+                const content = item.innerHTML;
+                modalContent.innerHTML = `<div style="background: var(--surface); padding: 40px;">${content}</div>`;
+                modal.classList.add('active');
+            });
+        });
+        
+        modalClose.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+        
+        // Parallax on scroll
+        let ticking = false;
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-title');
+            if (parallax) {
+                parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        });
+        
+        // Stagger grid items on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 30);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.grid-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'all 0.6s cubic-bezier(0.19, 1, 0.22, 1)';
+            observer.observe(item);
+        });
+    </script>
 </body>
 </html>
