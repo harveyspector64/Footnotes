@@ -1,488 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <title>Footnotes of Creation • Archive</title>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Footnotes of Creation • Archive</title>
 
-    <!-- fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- Lenis smooth-scroll -->
-    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.6/dist/lenis.min.js"></script>
+<!-- Lenis smooth-scroll (stable URL) -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.6/dist/lenis.min.js"></script>
 
-    <style>
-      /* ----------  ROOT & RESET ---------------------------------------------------- */
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      :root {
-        --bg: #0c0c0d;
-        --card: #18181a;
-        --panel: #111;
-        --stroke: #2a2a2d;
-        --txt: #e4e4e4;
-        --muted: #868686;
-        --accent: #53ff00;
-        --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
-        font-family: "Inter", system-ui, sans-serif;
-      }
-      html,
-      body {
-        height: 100%;
-        background: var(--bg);
-        color: var(--txt);
-      }
-      a {
-        color: var(--accent);
-        text-decoration: none;
-      }
-      body.no-scroll {
-        overflow: hidden;
-      }
+<style>
+/* ---------- ROOT & RESET ------------------------------------------------ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0c0d;      --card:#18181a;  --panel:#111;
+  --stroke:#2a2a2d;  --txt:#e4e4e4;   --muted:#868686;
+  --accent:#53ff00;  --ease:cubic-bezier(.25,.1,.25,1);
+  font-family:"Inter",system-ui,sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--txt)}
+body.no-scroll{overflow:hidden}
 
-      /* ----------  TOP STRIP ------------------------------------------------------- */
-      header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 1000;
-        padding: 0.55rem 1rem;
-        background: #000b;
-        backdrop-filter: blur(6px);
-        border-bottom: 1px solid var(--stroke);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        transition: transform 0.4s var(--ease);
-      }
-      header.hide {
-        transform: translateY(-100%);
-      }
-      /* mini green glyph */
-      .glyph {
-        width: 18px;
-        height: 18px;
-        background: var(--accent);
-        mask: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 0h6v2H2zm6 8H2v2h6zM0 2h2v6H0zm10 0H8v6h2z'/%3E%3C/svg%3E")
-          center/contain no-repeat;
-        margin-right: 0.9rem;
-      }
+/* ---------- HEADER ------------------------------------------------------ */
+header{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  background:#000b;backdrop-filter:blur(6px);
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.6rem 1rem;border-bottom:1px solid var(--stroke);
+  transition:transform .4s var(--ease)}
+header.hide{transform:translateY(-100%)}
+header h1{font-size:.8rem;letter-spacing:2px;color:var(--accent)}
+.main-links{display:flex;gap:2rem;font-size:.75rem;text-transform:uppercase}
+.main-links a{color:var(--txt);text-decoration:none;font-weight:600}
 
-      /* centre nav links */
-      .main-links {
-        display: flex;
-        gap: 2.2rem;
-        font-size: 0.76rem;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-      }
-      .main-links a {
-        color: var(--txt);
-        font-weight: 600;
-      }
+/* ---------- FILTER BAR -------------------------------------------------- */
+.filterbar{
+  position:fixed;top:42px;left:0;width:100%;z-index:999;
+  background:#000b;border-bottom:1px solid var(--stroke);
+  display:flex;justify-content:center;gap:.8rem;padding:.45rem 0;
+  font-size:.78rem}
+.label{color:var(--muted)}
+#filters{display:flex;gap:1.2rem;position:relative}
+#filters button{
+  background:none;border:none;cursor:pointer;
+  color:var(--txt);font-weight:600;letter-spacing:1px}
+#filters button.active{color:var(--accent)}
+#filters::after{
+  content:"";position:absolute;bottom:-4px;height:2px;width:var(--uw,0);
+  background:var(--accent);transform:translateX(var(--ux,0));
+  transition:.3s var(--ease)}
 
-      /* FILTER bar (second row) */
-      .filterbar {
-        position: fixed;
-        top: 42px;
-        left: 0;
-        width: 100%;
-        background: #000b;
-        border-bottom: 1px solid var(--stroke);
-        z-index: 999;
-        display: flex;
-        justify-content: center;
-        padding: 0.45rem 0;
-        font-size: 0.78rem;
-      }
-      .filterbar .label {
-        color: var(--muted);
-        margin-right: 0.8rem;
-      }
-      #filters {
-        display: flex;
-        gap: 1.2rem;
-        position: relative;
-      }
-      #filters button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--txt);
-        font-weight: 600;
-        letter-spacing: 1px;
-      }
-      #filters button.active {
-        color: var(--accent);
-      }
-      #filters::after {
-        content: "";
-        position: absolute;
-        height: 2px;
-        background: var(--accent);
-        bottom: -4px;
-        left: 0;
-        width: var(--uw, 0);
-        transform: translateX(var(--ux, 0));
-        transition: 0.3s var(--ease);
-      }
+/* ---------- GRID -------------------------------------------------------- */
+main{padding:6.5rem 2vw 3rem}
+.container{max-width:1440px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.1rem}
+.card{
+  background:var(--card);border:1px solid var(--stroke);cursor:pointer;
+  transition:transform .28s var(--ease),box-shadow .28s var(--ease)}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 12px #0007}
+.card img{width:100%;display:block;object-fit:cover;aspect-ratio:4/3}
+.meta{padding:.85rem .9rem;font-size:.78rem;line-height:1.45}
+.meta h3{font-size:1rem;font-weight:600;margin:.25rem 0 .15rem}
+.tag{font-size:.65rem;text-transform:uppercase;color:var(--muted)}
 
-      /* ----------  GRID ----------------------------------------------------------- */
-      main {
-        padding: 6.5rem 2vw 3rem; /* accounts for 2 fixed bars */
-      }
-      .container {
-        max-width: 1440px;
-        margin: 0 auto;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.1rem;
-      }
-      .card {
-        background: var(--card);
-        border: 1px solid var(--stroke);
-        cursor: pointer;
-        transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease);
-        opacity: 0;
-        transform: translateY(14px);
-      }
-      .card.show {
-        opacity: 1;
-        transform: none;
-      }
-      .card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px #0007;
-      }
-      .card img {
-        width: 100%;
-        display: block;
-        object-fit: cover;
-        aspect-ratio: 4 / 3;
-      }
-      .meta {
-        padding: 0.85rem 0.9rem;
-        font-size: 0.78rem;
-        line-height: 1.45;
-      }
-      .meta h3 {
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0.25rem 0 0.15rem;
-      }
-      .tag {
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
+/* ---------- PANEL ------------------------------------------------------- */
+#dim{
+  position:fixed;inset:0;background:#000a;backdrop-filter:blur(2px);
+  opacity:0;visibility:hidden;transition:.4s var(--ease);z-index:1050}
+#dim.show{opacity:1;visibility:visible}
+#panel{
+  position:fixed;top:0;right:-100%;height:100%;width:34%;min-width:310px;
+  background:var(--panel);box-shadow:-6px 0 20px #000a;
+  overflow-y:auto;transition:right .6s var(--ease);z-index:1100;
+  display:flex;flex-direction:column}
+#panel.open{right:0}
+#panel header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 1.2rem;border-bottom:1px solid var(--stroke)}
+#panel header h2{font-size:1rem;color:var(--accent)}
+.close-btn{background:none;border:none;font-size:1.4rem;color:var(--txt);cursor:pointer}
+.body{padding:1.2rem 1.4rem 2rem;font-size:.9rem;line-height:1.6}
+.body img{width:100%;margin:.9rem 0;border:1px solid var(--stroke)}
+.body iframe{width:100%;aspect-ratio:16/9;border:1px solid var(--stroke);margin:.9rem 0}
+.footnotes{margin-top:1rem;border-top:1px dashed var(--stroke);padding-top:.7rem;font-size:.8rem;color:var(--muted)}
+@media(max-width:680px){#panel{width:100%}}
 
-      /* ----------  PANEL ---------------------------------------------------------- */
-      #dim {
-        position: fixed;
-        inset: 0;
-        background: #000a;
-        backdrop-filter: blur(2px);
-        opacity: 0;
-        visibility: hidden;
-        transition: 0.4s var(--ease);
-        z-index: 1050;
-      }
-      #dim.show {
-        opacity: 1;
-        visibility: visible;
-      }
-      #panel {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 34%;
-        min-width: 310px;
-        height: 100%;
-        background: var(--panel);
-        box-shadow: -6px 0 20px #000a;
-        overflow-y: auto;
-        transition: right 0.6s var(--ease);
-        z-index: 1100;
-        display: flex;
-        flex-direction: column;
-      }
-      #panel.open {
-        right: 0;
-      }
-      #panel header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 1.2rem;
-        border-bottom: 1px solid var(--stroke);
-      }
-      #panel header h2 {
-        font-size: 1rem;
-        color: var(--accent);
-      }
-      .close-btn {
-        background: none;
-        border: none;
-        font-size: 1.4rem;
-        color: var(--txt);
-        cursor: pointer;
-      }
-      .body {
-        padding: 1.2rem 1.4rem 2rem;
-        font-size: 0.9rem;
-        line-height: 1.6;
-      }
-      .body img {
-        width: 100%;
-        margin: 0.9rem 0;
-        border: 1px solid var(--stroke);
-      }
-      .body iframe {
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        border: 1px solid var(--stroke);
-        margin: 0.9rem 0;
-      }
-      .footnotes {
-        margin-top: 1rem;
-        border-top: 1px dashed var(--stroke);
-        padding-top: 0.7rem;
-        font-size: 0.8rem;
-        color: var(--muted);
-      }
-      @media (max-width: 680px) {
-        #panel {
-          width: 100%;
-        }
-      }
+/* ---------- SCROLLBAR --------------------------------------------------- */
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--stroke)}
+</style>
+</head>
+<body>
 
-      /* ----------  SCROLLBAR ------------------------------------------------------ */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: var(--stroke);
-      }
-    </style>
-  </head>
+<div id="dim"></div>
 
-  <body>
-    <!-- dim layer -->
-    <div id="dim"></div>
+<!-- HEADER -->
+<header id="topbar">
+  <h1>FOC • ARCHIVE</h1>
+  <nav class="main-links" aria-label="Main">
+    <a href="#">Project</a><a href="#">Shop</a><a href="#">TXT</a>
+  </nav>
+</header>
 
-    <!-- top nav -->
-    <header id="topbar">
-      <div style="display: flex; align-items: center">
-        <div class="glyph" aria-hidden="true"></div>
-        <nav class="main-links" aria-label="Main">
-          <a href="#">Project</a><a href="#">Shop</a><a href="#">Mek.txt</a>
-        </nav>
-      </div>
-      <div style="width: 16px; height: 16px; border: 1px solid var(--accent)"></div>
-    </header>
+<!-- FILTER BAR -->
+<div class="filterbar">
+  <span class="label">Filter</span>
+  <div id="filters">
+    <button class="active" data-filter="all">all</button>
+    <button data-filter="vision">vision</button>
+    <button data-filter="text">text</button>
+    <button data-filter="promo">promo</button>
+  </div>
+</div>
 
-    <!-- filter row -->
-    <div class="filterbar">
-      <span class="label">Filter</span>
-      <div id="filters">
-        <button class="active" data-filter="all">all</button>
-        <button data-filter="vision">vision</button>
-        <button data-filter="text">text</button>
-        <button data-filter="promo">promo</button>
-      </div>
-    </div>
+<!-- GRID -->
+<main>
+  <div class="container">
+    <section class="grid" id="grid">
+      <article class="card" data-tags="vision promo">
+        <img loading="lazy" src="https://placehold.co/640x480/ff2e2e/000?text=Genesis+Poster" alt="">
+        <div class="meta"><span class="tag">vision</span><h3>Genesis Key-Art</h3><span class="date">Day 0</span></div>
+      </article>
 
-    <!-- grid -->
-    <main>
-      <div class="container">
-        <section class="grid" id="grid">
-          <!-- cards -->
-          <article class="card" data-tags="vision promo">
-            <img
-              loading="lazy"
-              src="https://placehold.co/640x480/ff2e2e/000?text=Genesis+Poster"
-              alt=""
-            />
-            <div class="meta">
-              <span class="tag">vision</span>
-              <h3>Genesis Key-Art</h3>
-              <span class="date">Day 0</span>
-            </div>
-          </article>
+      <article class="card" data-tags="text">
+        <img loading="lazy" src="https://placehold.co/640x800/1e90ff/000?text=Manuscript" alt="">
+        <div class="meta"><span class="tag">text</span><h3>Clamor in the Void</h3><span class="date">Fragment 134</span></div>
+      </article>
 
-          <article class="card" data-tags="text">
-            <img
-              loading="lazy"
-              src="https://placehold.co/640x800/1e90ff/000?text=Manuscript"
-              alt=""
-            />
-            <div class="meta">
-              <span class="tag">text</span>
-              <h3>Clamor in the Void</h3>
-              <span class="date">Fragment 134</span>
-            </div>
-          </article>
+      <article class="card" data-tags="promo">
+        <img loading="lazy" src="https://placehold.co/640x360/00af64/000?text=Teaser+Clip" alt="">
+        <div class="meta"><span class="tag">promo</span><h3>30 s Teaser</h3><span class="date">Now</span></div>
+      </article>
+      <!-- duplicate more cards -->
+    </section>
+  </div>
+</main>
 
-          <article class="card" data-tags="promo">
-            <img
-              loading="lazy"
-              src="https://placehold.co/640x360/00af64/000?text=Teaser+Clip"
-              alt=""
-            />
-            <div class="meta">
-              <span class="tag">promo</span>
-              <h3>30 sec Teaser</h3>
-              <span class="date">Now</span>
-            </div>
-          </article>
+<!-- PANEL -->
+<aside id="panel" aria-hidden="true">
+  <header><h2 id="panelTitle">Title</h2><button class="close-btn" aria-label="Close">&times;</button></header>
+  <div class="body" id="panelBody"></div>
+</aside>
 
-          <!-- duplicate / extend as needed -->
-        </section>
-      </div>
-    </main>
+<!-- SCRIPT -->
+<script>
+/* Lenis smooth scroll --------------------------------------------------*/
+if(window.Lenis){
+  const lenis=new Lenis({smoothWheel:true});
+  function raf(t){lenis.raf(t);requestAnimationFrame(raf)}requestAnimationFrame(raf);
+}
 
-    <!-- slide-in panel -->
-    <aside id="panel" aria-hidden="true">
-      <header>
-        <h2 id="panelTitle">Title</h2>
-        <button class="close-btn" aria-label="Close panel">&times;</button>
-      </header>
-      <div class="body" id="panelBody"></div>
-    </aside>
+/* Header hide on scroll -----------------------------------------------*/
+let last=0,topbar=document.getElementById('topbar');
+const scrollFn=()=>{const y=window.scrollY;
+  if(y>last+10)topbar.classList.add('hide');
+  else if(y<last-10)topbar.classList.remove('hide');
+  last=y;}
+document.addEventListener('scroll',scrollFn,{passive:true});
 
-    <!-- logic -->
-    <script>
-      /* Lenis ------------------------------------------------------------------- */
-      let lenis;
-      if (window.Lenis) {
-        lenis = new Lenis({ smoothWheel: true });
-        function raf(t) {
-          lenis.raf(t);
-          requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-      }
+/* Filter underline helper ---------------------------------------------*/
+const underline=btn=>{
+  const nav=btn.parentElement,r=btn.getBoundingClientRect(),p=nav.getBoundingClientRect();
+  nav.style.setProperty('--uw',`${r.width}px`);
+  nav.style.setProperty('--ux',`${r.left-p.left}px`);
+};
 
-      /* Header hide / show on scroll ------------------------------------------- */
-      const topbar = document.getElementById("topbar");
-      let prev = 0;
-      if (lenis) {
-        lenis.on("scroll", ({ animatedScroll }) => {
-          if (animatedScroll > prev + 10) topbar.classList.add("hide");
-          else if (animatedScroll < prev - 10) topbar.classList.remove("hide");
-          prev = animatedScroll;
-        });
-      } else {
-        window.addEventListener("scroll", () => {
-          const y = window.scrollY;
-          if (y > prev + 10) topbar.classList.add("hide");
-          else if (y < prev - 10) topbar.classList.remove("hide");
-          prev = y;
-        });
-      }
+/* Filter clicks -------------------------------------------------------*/
+const btns=[...document.querySelectorAll('#filters button')];
+const cards=[...document.querySelectorAll('.card')];
+underline(btns[0]);
+btns.forEach(b=>b.onclick=()=>{
+  btns.forEach(x=>x.classList.remove('active'));b.classList.add('active');underline(b);
+  const f=b.dataset.filter;
+  cards.forEach(c=>c.style.display=(f==='all'||c.dataset.tags.includes(f))?'block':'none');
+});
 
-      /* Fade-in cards ----------------------------------------------------------- */
-      const revealObs = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((e) => {
-            if (e.isIntersecting) {
-              e.target.classList.add("show");
-              obs.unobserve(e.target);
-            }
-          });
-        },
-        { threshold: 0.15 }
-      );
-      document.querySelectorAll(".card").forEach((c) => revealObs.observe(c));
+/* Panel logic ---------------------------------------------------------*/
+const panel=document.getElementById('panel'),dim=document.getElementById('dim');
+const pTitle=document.getElementById('panelTitle'),pBody=document.getElementById('panelBody');
+const openPanel=(title,html)=>{
+  pTitle.textContent=title; pBody.innerHTML=html;
+  panel.classList.add('open');dim.classList.add('show');
+  panel.setAttribute('aria-hidden','false');document.body.classList.add('no-scroll');};
+const closePanel=()=>{
+  panel.classList.remove('open');dim.classList.remove('show');
+  panel.setAttribute('aria-hidden','true');document.body.classList.remove('no-scroll');};
+document.querySelector('.close-btn').onclick=closePanel;dim.onclick=closePanel;
+document.onkeydown=e=>{if(e.key==='Escape')closePanel()};
 
-      /* underline helper for filter bar */
-      const underline = (btn) => {
-        const nav = btn.parentElement;
-        const r = btn.getBoundingClientRect();
-        const p = nav.getBoundingClientRect();
-        nav.style.setProperty("--uw", `${r.width}px`);
-        nav.style.setProperty("--ux", `${r.left - p.left}px`);
-      };
-
-      /* Filter logic ----------------------------------------------------------- */
-      const buttons = [...document.querySelectorAll("#filters button")];
-      const cards = [...document.querySelectorAll(".card")];
-      underline(buttons[0]);
-      buttons.forEach((b) =>
-        b.addEventListener("click", () => {
-          buttons.forEach((x) => x.classList.remove("active"));
-          b.classList.add("active");
-          underline(b);
-          const f = b.dataset.filter;
-          cards.forEach((c) => {
-            c.style.display =
-              f === "all" || c.dataset.tags.includes(f) ? "block" : "none";
-          });
-        })
-      );
-
-      /* Panel logic ------------------------------------------------------------ */
-      const panel = document.getElementById("panel");
-      const dim = document.getElementById("dim");
-      const pTitle = document.getElementById("panelTitle");
-      const pBody = document.getElementById("panelBody");
-
-      const openPanel = (title, html) => {
-        pTitle.textContent = title;
-        pBody.innerHTML = html;
-        panel.classList.add("open");
-        panel.setAttribute("aria-hidden", "false");
-        dim.classList.add("show");
-        document.body.classList.add("no-scroll");
-      };
-      const closePanel = () => {
-        panel.classList.remove("open");
-        panel.setAttribute("aria-hidden", "true");
-        dim.classList.remove("show");
-        document.body.classList.remove("no-scroll");
-      };
-      document.querySelector(".close-btn").onclick = closePanel;
-      dim.onclick = closePanel;
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closePanel();
-      });
-
-      /* Card click content (demo) --------------------------------------------- */
-      cards.forEach((c) =>
-        c.addEventListener("click", () => {
-          const tag = c.dataset.tags.split(" ")[0];
-          let html = "";
-          if (tag === "vision") {
-            html = `
-        <p>High-resolution poster art foreshadowing cosmic turmoil.</p>
-        <img src="https://placehold.co/900x600/ff2e2e/000?text=Full+Poster" alt="">
-        <div class="footnotes">Ⓕ Note 42 — litho-printed on photon-paper.</div>`;
-          } else if (tag === "text") {
-            html = `
-        <p><strong>Excerpt — Clamor in the Void</strong></p>
-        <p>“In the Before, which is to say the Never-Quite-But-Almost, there roll’d a sort of Clamor…”</p>`;
-          } else {
-            html = `
-        <iframe src="https://www.youtube.com/embed/TlP5WIxVirU" title="teaser"></iframe>
-        <p>Placeholder clip. Swap embed URL.</p>`;
-          }
-          openPanel(c.querySelector("h3").textContent, html);
-        })
-      );
-    </script>
-  </body>
+/* Card click demo content ---------------------------------------------*/
+cards.forEach(c=>c.onclick=()=>{
+  const tag=c.dataset.tags.split(' ')[0];let html='';
+  if(tag==='vision'){
+    html=`<p>High-resolution poster art foreshadowing cosmic turmoil.</p>
+          <img src="https://placehold.co/900x600/ff2e2e/000?text=Full+Poster" alt="">
+          <div class="footnotes">Ⓕ Note 42 — litho-printed on photon-paper.</div>`;
+  }else if(tag==='text'){
+    html=`<p><strong>Excerpt — Clamor in the Void</strong></p>
+          <p>“In the Before, which is to say the Never-Quite-But-Almost, there roll’d… ”</p>`;
+  }else{
+    html=`<iframe src="https://www.youtube.com/embed/TlP5WIxVirU" title="teaser"></iframe>
+           <p>Placeholder clip. Swap embed URL.</p>`;
+  }
+  openPanel(c.querySelector('h3').textContent,html);
+});
+</script>
+</body>
 </html>
