@@ -1,0 +1,21 @@
+[
+  {
+    "id": "genesis-keyart",
+    "title": "Genesis Key-Art",
+    "tags": ["vision","promo"],
+    "thumb": "assets/genesisPoster.jpg",
+    "video": "assets/teaser01.webm",
+    "date": "Day 0",
+    "accent": "#ff2e2e",
+    "desc": "High-resolution poster foreshadowing cosmic turmoil.",
+    "foot": "Footnote 42 — litho-printed on photon-paper."
+  },
+  {
+    "id": "clamor-in-the-void",
+    "title": "Clamor in the Void",
+    "tags": ["text"],
+    "image": "assets/chapterScrap.jpg",
+    "date": "Fragment 134",
+    "desc": "“In the Before, which is to say the Never-Quite-But-Almost, there roll’d …”"
+  }
+]
