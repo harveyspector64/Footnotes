@@ -1,741 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Footnotes of Creation</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=EB+Garamond:ital,wght@0,400;1,400&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --bg: #0a0a0a;
-            --surface: #0f0f0f;
-            --text: #f5f5f5;
-            --text-dim: #888;
-            --accent: #ff3333;
-            --border: rgba(255,255,255,0.08);
-            --gutter: 2px;
-        }
-        
-        ::selection {
-            background: var(--accent);
-            color: var(--bg);
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            font-weight: 400;
-            font-size: 13px;
-            line-height: 1.6;
-            background: var(--bg);
-            color: var(--text);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        /* Custom Cursor */
-        body {
-            cursor: none;
-        }
-        
-        .cursor {
-            width: 10px;
-            height: 10px;
-            background: var(--text);
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            border-radius: 50%;
-            transition: transform 0.15s ease-out;
-        }
-        
-        .cursor.hover {
-            transform: scale(3);
-        }
-        
-        /* Navigation */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 20px;
-            background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
-            backdrop-filter: blur(10px);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 100%;
-        }
-        
-        .logo {
-            font-size: 11px;
-            letter-spacing: 0.08em;
-            font-weight: 500;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 11px;
-            letter-spacing: 0.05em;
-            transition: color 0.3s;
-            position: relative;
-        }
-        
-        .nav-links a:hover {
-            color: var(--text);
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--text);
-            transition: width 0.3s;
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        /* Hero */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: radial-gradient(ellipse at center, rgba(255,51,51,0.1) 0%, transparent 70%);
-        }
-        
-        .hero-title {
-            font-family: 'EB Garamond', serif;
-            font-size: clamp(3rem, 10vw, 7rem);
-            font-weight: 400;
-            text-align: center;
-            line-height: 0.9;
-            letter-spacing: -0.03em;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out 0.5s forwards;
-        }
-        
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-        
-        /* Grid Container */
-        .grid-container {
-            width: 100%;
-            padding: var(--gutter);
-            background: var(--bg);
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--gutter);
-            width: 100%;
-        }
-        
-        /* Grid Items */
-        .grid-item {
-            position: relative;
-            overflow: hidden;
-            background: var(--surface);
-            aspect-ratio: 1;
-            cursor: pointer;
-            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        
-        .grid-item::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 100%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1;
-        }
-        
-        .grid-item:hover::before {
-            opacity: 1;
-        }
-        
-        .grid-item:hover {
-            transform: scale(0.98);
-        }
-        
-        /* Image/Video Items */
-        .media-item {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .media-item img,
-        .media-item video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .media-item img {
-            transition: opacity 0.3s;
-        }
-        
-        .media-item video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        
-        .media-item.playing img {
-            opacity: 0;
-        }
-        
-        .media-item.playing video {
-            opacity: 1;
-        }
-        
-        /* Text Items */
-        .text-item {
-            padding: 25px;
-            height: 100%;
-            display: flex;
-            align-items: flex-start;
-            font-family: 'EB Garamond', serif;
-            font-size: 16px;
-            line-height: 1.4;
-            color: var(--text-dim);
-            transition: color 0.3s;
-        }
-        
-        .text-item:hover {
-            color: var(--text);
-        }
-        
-        /* Quote Items */
-        .quote-item {
-            padding: 30px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(255,51,51,0.05) 0%, transparent 100%);
-        }
-        
-        .quote-text {
-            font-family: 'EB Garamond', serif;
-            font-size: 20px;
-            font-style: italic;
-            margin-bottom: 10px;
-            color: var(--text);
-        }
-        
-        .quote-attribution {
-            font-size: 11px;
-            letter-spacing: 0.1em;
-            color: var(--text-dim);
-            text-transform: uppercase;
-        }
-        
-        /* Data Items */
-        .data-item {
-            padding: 20px;
-            font-family: 'Inter', monospace;
-            font-size: 11px;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            letter-spacing: 0.05em;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255,51,51,0.03) 2px,
-                rgba(255,51,51,0.03) 4px
-            );
-        }
-        
-        /* Metadata */
-        .item-meta {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            font-size: 10px;
-            letter-spacing: 0.08em;
-            color: var(--text);
-            background: var(--bg);
-            padding: 5px 10px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s;
-            z-index: 2;
-        }
-        
-        .grid-item:hover .item-meta {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0,0,0,0.95);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            backdrop-filter: blur(20px);
-        }
-        
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal-content {
-            width: 90%;
-            max-width: 1200px;
-            max-height: 90vh;
-            position: relative;
-        }
-        
-        .modal-close {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            z-index: 10;
-        }
-        
-        .modal-close::before,
-        .modal-close::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 1px;
-            background: var(--text);
-            transform: translate(-50%, -50%) rotate(45deg);
-        }
-        
-        .modal-close::after {
-            transform: translate(-50%, -50%) rotate(-45deg);
-        }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--bg);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-dim);
-        }
-        
-        /* Loading State */
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: var(--bg);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s;
-        }
-        
-        .loading-text {
-            font-family: 'EB Garamond', serif;
-            font-size: 16px;
-            color: var(--text-dim);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .cursor {
-                display: none;
-            }
-            
-            body {
-                cursor: auto;
-            }
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Footnotes of Creation • Archive</title>
+
+<!-- --- Fonts & Lenis inertial scroll --- -->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.38/bundled/lenis.min.js"></script>
+
+<style>
+/* 1 ROOT & RESET -----------------------------------------------------------*/
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0c0d;        --panel:#111;
+  --card:#171719;      --stroke:#2a2a2d;
+  --txt:#e4e4e4;       --muted:#888;
+  --accent:#53ff00;    --ease:cubic-bezier(.25,.1,.25,1);
+  font-family:"Inter",system-ui,sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--txt);scroll-behavior:smooth}
+
+/* 2 CUSTOM FOLLOWER --------------------------------------------------------*/
+#follower{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:2000;
+  width:20px;height:20px;border:1px solid var(--accent);border-radius:50%;
+  mix-blend-mode:difference;transition:transform .12s linear}
+body{cursor:default}
+
+/* 3 TOP BAR ---------------------------------------------------------------*/
+header{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  background:#000b;backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem 1rem;border-bottom:1px solid var(--stroke)}
+header h1{font-size:.85rem;letter-spacing:2px;color:var(--accent);white-space:nowrap}
+nav#filters{display:flex;gap:1rem;font-size:.8rem;position:relative}
+nav#filters button{
+  background:none;border:none;color:var(--txt);font-weight:600;cursor:pointer;letter-spacing:1px}
+nav#filters button.active{color:var(--accent)}
+nav#filters::after{ /* green underline under active */
+  content:"";position:absolute;height:2px;background:var(--accent);bottom:-5px;left:0;width:var(--uw,0);transform:translateX(var(--ux,0));transition:.3s var(--ease)}
+.search{width:16px;height:16px;border:1px solid var(--accent)}
+
+/* 4 GRID ------------------------------------------------------------------*/
+main{padding:5rem 2vw 3rem}
+.container{max-width:1440px;margin:0 auto}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:1rem 1rem}
+.card{
+  background:var(--card);border:1px solid var(--stroke);cursor:pointer;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease);}
+.card:hover{transform:translateY(-4px) scale(1.015);box-shadow:0 6px 12px #0006}
+.card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.meta{padding:.85rem .9rem;font-size:.8rem}
+.meta h3{font-size:1rem;font-weight:600;margin:.25rem 0}
+.tag{font-size:.65rem;color:var(--muted);text-transform:uppercase}
+
+/* 5 PANEL -----------------------------------------------------------------*/
+#panel{
+  position:fixed;top:0;right:-100%;height:100%;width:33%;min-width:310px;
+  background:var(--panel);box-shadow:-6px 0 20px #000a;
+  overflow-y:auto;transition:right .65s var(--ease);z-index:1100;
+  display:flex;flex-direction:column;backdrop-filter:blur(4px)}
+#panel.open{right:0}
+#panel header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 1.2rem;border-bottom:1px solid var(--stroke)}
+#panel header h2{font-size:1rem;color:var(--accent)}
+.close-btn{background:none;border:none;font-size:1.4rem;color:var(--txt);cursor:pointer}
+.body{padding:1.25rem 1.4rem;font-size:.9rem;line-height:1.6}
+.body video,.body iframe{width:100%;aspect-ratio:16/9;margin:.8rem 0;border:none;border:1px solid var(--stroke)}
+.footnotes{margin-top:1rem;border-top:1px dashed var(--stroke);padding-top:.7rem;font-size:.8rem;color:var(--muted)}
+@media(max-width:680px){#panel{width:100%}}
+
+/* 6 SCROLLBAR TWEAK (subtle) ---------------------------------------------*/
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--stroke);border-radius:3px}
+</style>
 </head>
 <body>
-    <!-- Loading -->
-    <div class="loading">
-        <div class="loading-text">Loading fragments...</div>
-    </div>
-    
-    <!-- Cursor -->
-    <div class="cursor"></div>
-    
-    <!-- Header -->
-    <header>
-        <nav>
-            <div class="logo">FOOTNOTES OF CREATION</div>
-            <ul class="nav-links">
-                <li><a href="#info">INFO</a></li>
-                <li><a href="#archive">ARCHIVE</a></li>
-                <li><a href="#contact">CONTACT</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <!-- Hero -->
-    <section class="hero">
-        <h1 class="hero-title">Footnotes<br>of Creation</h1>
-    </section>
-    
-    <!-- Grid -->
-    <section class="grid-container">
-        <div class="grid">
-            <!-- Media item with still-to-video -->
-            <div class="grid-item">
-                <div class="media-item" data-video="true">
-                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=400&fit=crop" alt="">
-                    <video loop muted playsinline>
-                        <source src="video1.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item-meta">01 / GENESIS</div>
-            </div>
-            
-            <!-- Text excerpt -->
-            <div class="grid-item">
-                <div class="text-item">
-                    "In the Before, which is to say the Never-Quite-But-Almost, there roll'd a sort of Clamor, a Cosmic Mutter..."
-                </div>
-                <div class="item-meta">EXCERPT / CH.1</div>
-            </div>
-            
-            <!-- Quote -->
-            <div class="grid-item">
-                <div class="quote-item">
-                    <div class="quote-text">"Rules are Inertia, doll."</div>
-                    <div class="quote-attribution">The Serpent</div>
-                </div>
-            </div>
-            
-            <!-- Media -->
-            <div class="grid-item">
-                <div class="media-item">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" alt="">
-                </div>
-                <div class="item-meta">CAIN / PORTRAIT</div>
-            </div>
-            
-            <!-- Data visualization -->
-            <div class="grid-item">
-                <div class="data-item">
-                    DAP-9000™<br>
-                    PROTOCOL E-R-A-S-E<br>
-                    ▓▓▓▓▓▓▓▓░░ 82%
-                </div>
-            </div>
-            
-            <!-- Text -->
-            <div class="grid-item">
-                <div class="text-item">
-                    "The Earth was without Form, and void, much like the Crown-Prince's Skull after a Night at the Leipzig Gaming-Tables..."
-                </div>
-                <div class="item-meta">VOID / TEXT</div>
-            </div>
-            
-            <!-- Media with video -->
-            <div class="grid-item">
-                <div class="media-item" data-video="true">
-                    <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=400&fit=crop" alt="">
-                    <video loop muted playsinline>
-                        <source src="video2.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item-meta">SERPENT / MOTION</div>
-            </div>
-            
-            <!-- Quote -->
-            <div class="grid-item">
-                <div class="quote-item">
-                    <div class="quote-text">"Creation isn't finished with us yet."</div>
-                    <div class="quote-attribution">Eve</div>
-                </div>
-            </div>
-            
-            <!-- Media -->
-            <div class="grid-item">
-                <div class="media-item">
-                    <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&h=400&fit=crop" alt="">
-                </div>
-                <div class="item-meta">ARCHIVE / 004</div>
-            </div>
-            
-            <!-- Data -->
-            <div class="grid-item">
-                <div class="data-item">
-                    SYSTEM ERROR<br>
-                    eden.exe corrupted<br>
-                    ████████████
-                </div>
-            </div>
-            
-            <!-- Text -->
-            <div class="grid-item">
-                <div class="text-item">
-                    "Heaven's Memo had been quite clear: the Mark'd One shall know neither Death nor Harvest..."
-                </div>
-                <div class="item-meta">MARK / CAIN</div>
-            </div>
-            
-            <!-- Media -->
-            <div class="grid-item">
-                <div class="media-item">
-                    <img src="https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=400&h=400&fit=crop" alt="">
-                </div>
-                <div class="item-meta">FLOOD / DOC</div>
-            </div>
-            
-            <!-- Quote -->
-            <div class="grid-item">
-                <div class="quote-item">
-                    <div class="quote-text">"Every Garden needs a Serpent."</div>
-                    <div class="quote-attribution">Truth</div>
-                </div>
-            </div>
-            
-            <!-- Media with video -->
-            <div class="grid-item">
-                <div class="media-item" data-video="true">
-                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop" alt="">
-                    <video loop muted playsinline>
-                        <source src="video3.mp4" type="video/mp4">
-                    </video>
-                </div>
-                <div class="item-meta">ARK / SEQUENCE</div>
-            </div>
-            
-            <!-- Text -->
-            <div class="grid-item">
-                <div class="text-item">
-                    "The Nephilim roar'd—the Sound like Infants wailing in the Bodies of Colossi..."
-                </div>
-                <div class="item-meta">GIANTS / CH.6</div>
-            </div>
-            
-            <!-- Data -->
-            <div class="grid-item">
-                <div class="data-item">
-                    WATCHERS.LOG<br>
-                    Status: FALLEN<br>
-                    Location: UNKNOWN
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Modal -->
-    <div class="modal">
-        <div class="modal-close"></div>
-        <div class="modal-content"></div>
-    </div>
-    
-    <script>
-        // Custom cursor
-        const cursor = document.querySelector('.cursor');
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
-        
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-        
-        function animateCursor() {
-            const distX = mouseX - cursorX;
-            const distY = mouseY - cursorY;
-            
-            cursorX += distX * 0.1;
-            cursorY += distY * 0.1;
-            
-            cursor.style.left = cursorX + 'px';
-            cursor.style.top = cursorY + 'px';
-            
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
-        
-        // Cursor hover states
-        const hoverElements = document.querySelectorAll('a, .grid-item, button');
-        hoverElements.forEach(elem => {
-            elem.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-            elem.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-        });
-        
-        // Loading screen
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.loading').style.opacity = '0';
-                setTimeout(() => {
-                    document.querySelector('.loading').style.display = 'none';
-                }, 500);
-            }, 1000);
-        });
-        
-        // Smooth scroll after hero
-        document.querySelector('.hero').addEventListener('click', () => {
-            window.scrollTo({
-                top: window.innerHeight,
-                behavior: 'smooth'
-            });
-        });
-        
-        // Grid item interactions - still to video
-        document.querySelectorAll('.media-item[data-video="true"]').forEach(item => {
-            const video = item.querySelector('video');
-            if (!video) return;
-            
-            item.closest('.grid-item').addEventListener('mouseenter', () => {
-                video.play();
-                item.classList.add('playing');
-            });
-            
-            item.closest('.grid-item').addEventListener('mouseleave', () => {
-                video.pause();
-                video.currentTime = 0;
-                item.classList.remove('playing');
-            });
-        });
-        
-        // Modal functionality
-        const modal = document.querySelector('.modal');
-        const modalContent = document.querySelector('.modal-content');
-        const modalClose = document.querySelector('.modal-close');
-        
-        document.querySelectorAll('.grid-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                // Don't open modal for video items on hover
-                if (item.querySelector('.media-item[data-video="true"]') && e.target.closest('.media-item')) {
-                    return;
-                }
-                
-                const content = item.innerHTML;
-                modalContent.innerHTML = `<div style="background: var(--surface); padding: 40px;">${content}</div>`;
-                modal.classList.add('active');
-            });
-        });
-        
-        modalClose.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-        
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
-        
-        // Parallax on scroll
-        let ticking = false;
-        function updateParallax() {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero-title');
-            if (parallax) {
-                parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
-            }
-            ticking = false;
-        }
-        
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateParallax);
-                ticking = true;
-            }
-        });
-        
-        // Stagger grid items on scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }, index * 30);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        document.querySelectorAll('.grid-item').forEach((item, index) => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(20px)';
-            item.style.transition = 'all 0.6s cubic-bezier(0.19, 1, 0.22, 1)';
-            observer.observe(item);
-        });
-    </script>
+
+<div id="follower"></div>
+
+<!--  HEADER -->
+<header>
+  <h1>FOC • ARCHIVE</h1>
+  <nav id="filters" aria-label="Filter">
+    <button data-filter="all" class="active">all</button>
+    <button data-filter="vision">vision</button>
+    <button data-filter="text">text</button>
+    <button data-filter="promo">promo</button>
+  </nav>
+  <div class="search" aria-hidden="true"></div>
+</header>
+
+<!--  GRID -->
+<main>
+  <div class="container">
+   <section class="grid" id="grid">
+
+    <!-- SAMPLE CARDS ----------------------------------------------------->
+    <article class="card" data-tags="vision promo">
+      <img src="https://placehold.co/640x480/ff2e2e/000?text=Genesis+Poster" alt="">
+      <div class="meta"><span class="tag">vision</span><h3>Genesis Key-Art</h3><span class="date">Day 0</span></div>
+    </article>
+
+    <article class="card" data-tags="text">
+      <img src="https://placehold.co/640x480/1e90ff/000?text=Chapter+Scrap" alt="">
+      <div class="meta"><span class="tag">text</span><h3>Clamor in the Void</h3><span class="date">Fragment 134</span></div>
+    </article>
+
+    <article class="card" data-tags="promo">
+      <img src="https://placehold.co/640x480/00af64/000?text=30s+Trailer" alt="">
+      <div class="meta"><span class="tag">promo</span><h3>Teaser Clip</h3><span class="date">now</span></div>
+    </article>
+
+    <!-- duplicate / extend -->
+   </section>
+  </div>
+</main>
+
+<!--  PANEL -->
+<aside id="panel" aria-hidden="true">
+  <header>
+    <h2 id="panelTitle">Title</h2>
+    <button class="close-btn" aria-label="Close">&times;</button>
+  </header>
+  <div class="body" id="panelBody"></div>
+</aside>
+
+<!--  JS -->
+<script>
+/* Lenis smooth scroll ---------------------------------------------------*/
+const lenis=new Lenis({smoothWheel:true,gestureOrientation:"vertical"});
+function raf(time){lenis.raf(time);requestAnimationFrame(raf)}requestAnimationFrame(raf);
+
+/* Cursor follower ------------------------------------------------------*/
+const follower=document.getElementById('follower');let mx=0,my=0,fx=0,fy=0;
+window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+function loop(){
+  fx+=(mx-fx)*0.15; fy+=(my-fy)*0.15;
+  follower.style.transform=`translate(${fx-10}px,${fy-10}px)`;
+  requestAnimationFrame(loop);
+}loop();
+
+/* Filter logic ---------------------------------------------------------*/
+const btns=[...document.querySelectorAll('#filters button')];
+const cards=[...document.querySelectorAll('.card')];
+function underline(btn){
+  const nav=btn.parentElement; const r=btn.getBoundingClientRect();
+  const p=nav.getBoundingClientRect();
+  nav.style.setProperty('--uw',`${r.width}px`);
+  nav.style.setProperty('--ux',`${r.left-p.left}px`);
+}
+btns.forEach(b=>b.addEventListener('click',()=>{
+  btns.forEach(x=>x.classList.remove('active'));b.classList.add('active');underline(b);
+  const f=b.dataset.filter;
+  cards.forEach(c=>c.style.display=(f==='all'||c.dataset.tags.includes(f))?'block':'none');
+}));
+underline(document.querySelector('#filters .active'));
+
+/* Panel logic ----------------------------------------------------------*/
+const panel=document.getElementById('panel');
+const panelTitle=document.getElementById('panelTitle');
+const panelBody=document.getElementById('panelBody');
+function openPanel(title,html){
+  panelTitle.textContent=title; panelBody.innerHTML=html;
+  panel.classList.add('open');panel.setAttribute('aria-hidden','false');}
+function closePanel(){
+  panel.classList.remove('open');panel.setAttribute('aria-hidden','true');}
+document.querySelector('.close-btn').onclick=closePanel;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+
+/* Card click handlers (demo content) -----------------------------------*/
+cards.forEach(c=>{
+  c.addEventListener('click',()=>{
+    const tag=c.dataset.tags.split(' ')[0];
+    let html='';
+    if(tag==='vision'){
+      html=`<p>High-resolution poster art foreshadowing cosmic turmoil.</p>
+            <img src="https://placehold.co/900x600/ff2e2e/000?text=Full+Poster" alt="">
+            <div class="footnotes">Footnote 42 : litho-printed on photon-paper.</div>`;
+    }else if(tag==='text'){
+      html=`<p><strong>Excerpt—Clamor in the Void</strong></p>
+            <p>“In the Before, which is to say the Never-Quite-But-Almost, there roll’d …”</p>`;
+    }else{
+      html=`<iframe src="https://www.youtube.com/embed/TlP5WIxVirU" title="teaser"></iframe>
+             <p>Placeholder clip. Swap embed url.</p>`;
+    }
+    openPanel(c.querySelector('h3').textContent,html);
+  });
+});
+</script>
 </body>
 </html>
