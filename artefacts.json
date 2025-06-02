@@ -1,21 +1,110 @@
 [
   {
-    "id": "genesis-keyart",
-    "title": "Genesis Key-Art",
-    "tags": ["vision","promo"],
-    "thumb": "assets/genesisPoster.jpg",
-    "video": "assets/teaser01.webm",
-    "date": "Day 0",
-    "accent": "#ff2e2e",
-    "desc": "High-resolution poster foreshadowing cosmic turmoil.",
-    "foot": "Footnote 42 — litho-printed on photon-paper."
+    "id": "abelposter-lookaway2",
+    "title": "Abel — Look Away",
+    "tags": ["promo"],
+    "image": "assets/abelposter_lookaway2.png"
   },
   {
-    "id": "clamor-in-the-void",
-    "title": "Clamor in the Void",
-    "tags": ["text"],
-    "image": "assets/chapterScrap.jpg",
-    "date": "Fragment 134",
-    "desc": "“In the Before, which is to say the Never-Quite-But-Almost, there roll’d …”"
+    "id": "zigsposterdino-poster1",
+    "title": "Zigs — Poster Dino",
+    "tags": ["promo"],
+    "image": "assets/zigsposterdino_poster1.png"
+  },
+  {
+    "id": "abledead-poster2",
+    "title": "Able Dead — Poster 2",
+    "tags": ["promo"],
+    "image": "assets/abledead_poster2.png"
+  },
+  {
+    "id": "heaven-poster1",
+    "title": "Heaven — Poster 1",
+    "tags": ["promo"],
+    "image": "assets/heaven_poster1.png"
+  },
+  {
+    "id": "abledead-poster1",
+    "title": "Able Dead — Poster 1",
+    "tags": ["promo"],
+    "image": "assets/abledead_poster1.png"
+  },
+  {
+    "id": "adamposter-monuments",
+    "title": "Adam — Monuments",
+    "tags": ["promo"],
+    "image": "assets/adamposter_monuments.png"
+  },
+  {
+    "id": "cainposter-exile1",
+    "title": "Cain — Exile Ⅰ",
+    "tags": ["promo"],
+    "image": "assets/cainposter_exile1.png"
+  },
+  {
+    "id": "cainposter22",
+    "title": "Cain — Poster 22",
+    "tags": ["promo"],
+    "image": "assets/cainposter22.png"
+  },
+  {
+    "id": "eveposter-1-forbidden",
+    "title": "Eve — Forbidden",
+    "tags": ["promo"],
+    "image": "assets/eveposter_1_forbidden.png"
+  },
+  {
+    "id": "cainposter2-ok",
+    "title": "Cain — Poster 2 (OK)",
+    "tags": ["promo"],
+    "image": "assets/cainposter2_ok.png"
+  },
+  {
+    "id": "abel-poster1better",
+    "title": "Abel — Poster 1 (Better)",
+    "tags": ["promo"],
+    "image": "assets/abel_poster1better.png"
+  },
+  {
+    "id": "ophanim-poster1",
+    "title": "Ophanim — Poster 1",
+    "tags": ["promo"],
+    "image": "assets/ophanim_poster1.png"
+  },
+  {
+    "id": "dap-poster1",
+    "title": "DAP-9000 — Poster 1",
+    "tags": ["promo"],
+    "image": "assets/dap_poster1.png"
+  },
+  {
+    "id": "abel-poster1",
+    "title": "Abel — Poster 1",
+    "tags": ["promo"],
+    "image": "assets/abel_poster1.png"
+  },
+  {
+    "id": "serpent-poster1",
+    "title": "Serpent — Poster 1",
+    "tags": ["promo"],
+    "image": "assets/serpent_poster1.png"
+  },
+  {
+    "id": "yhwhinc-1sheeta",
+    "title": "YHWH Inc. — One-Sheet A",
+    "tags": ["promo"],
+    "image": "assets/yhwhinc_1sheetA.png"
+  },
+  {
+    "id": "brokenclock-clip",
+    "title": "Broken Clock",
+    "tags": ["promo"],
+    "video": "assets/BrokenClock.1.mp4"
+  },
+  {
+    "id": "serpentbrandy-clip",
+    "title": "Serpent Brandy",
+    "tags": ["promo"],
+    "video": "assets/SerpentBrandy.1.mp4"
   }
 ]
