@@ -1,174 +1,533 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { motion, AnimatePresence } from "framer-motion";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Footnotes of Creation</title>
+  <style>
+    /* Basic reset and base styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #f0f0f0;
+      background: #000;
+      /* Dark background for cinematic effect */
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4 {
+      font-family: Georgia, serif;
+      margin: 0.5em 0;
+    }
+    p {
+      margin: 0.5em 0;
+    }
+    a {
+      color: #9ac7ff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    /* Landing (hero) section styles */
+    .landing {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100vh;
+      padding: 2rem;
+      background: #000 no-repeat center center;
+      background-size: cover;
+      /* A background image or video poster can be added for cinematic effect */
+    }
+    .landing h1 {
+      font-size: 3rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .landing .tagline {
+      font-size: 1.2rem;
+      color: #ccc;
+      margin-top: 0.5em;
+    }
+    .landing .teaser {
+      font-size: 1rem;
+      color: #888;
+      margin-top: 1em;
+      max-width: 600px;
+    }
+    .scroll-cue {
+      margin-top: 2em;
+      font-size: 2rem;
+      color: #fff;
+      opacity: 0.7;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(10px); }
+      60% { transform: translateY(5px); }
+    }
+    /* Chapter sections container */
+    main {
+      /* main element wraps all chapters */
+    }
+    .chapter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      min-height: 80vh;
+    }
+    .chapter:nth-child(even) {
+      background: #111;  /* slight variation for contrast */
+    }
+    .chapter:nth-child(odd) {
+      background: #000;
+    }
+    .chapter-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      max-width: 1200px;
+      width: 100%;
+    }
+    .chapter-content .media, .chapter-content .text {
+      flex: 1 1 500px;
+      margin: 1rem;
+    }
+    .chapter-content .media {
+      position: relative;
+      min-height: 300px;
+      background: linear-gradient(135deg, #333 0%, #111 100%);
+      overflow: hidden;
+      /* This div is a placeholder for images/videos; replace background or content as needed */
+    }
+    .chapter-content .media img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .chapter-content .media::after {
+      /* Placeholder label on media blocks */
+      content: "Media Placeholder";
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #888;
+      font-size: 1rem;
+      font-style: italic;
+      pointer-events: none;
+    }
+    .chapter-content .text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+    .chapter-content .text h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5em;
+    }
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+      .chapter {
+        padding: 3rem 1rem;
+      }
+      .chapter-content {
+        flex-direction: column;
+      }
+      .chapter-content .media, .chapter-content .text {
+        flex: 1 1 auto;
+        margin: 0.5rem 0;
+      }
+      .chapter-content .text {
+        text-align: center;
+      }
+    }
+    /* Scroll-triggered reveal animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease-out;
+    }
+    .scroll-reveal.from-left { transform: translateX(-50px); }
+    .scroll-reveal.from-right { transform: translateX(50px); }
+    .scroll-reveal.active {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+    /* Floating menu button (hamburger icon) */
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      background: none;
+      border: none;
+      cursor: pointer;
+      outline: none;
+    }
+    .menu-btn .bar1, .menu-btn .bar2, .menu-btn .bar3 {
+      display: block;
+      width: 30px;
+      height: 4px;
+      background-color: #fff;
+      margin: 6px 0;
+      transition: 0.4s;
+    }
+    /* Hamburger to X icon transition */
+    .menu-btn.change .bar1 {
+      transform: translateY(10px) rotate(-45deg);
+    }
+    .menu-btn.change .bar2 {
+      opacity: 0;
+    }
+    .menu-btn.change .bar3 {
+      transform: translateY(-10px) rotate(45deg);
+    }
+    /* Full-screen overlay navigation styles */
+    .overlay-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease;
+      z-index: 1000;
+    }
+    .overlay-nav.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .overlay-nav ul {
+      list-style: none;
+      padding: 0;
+      text-align: center;
+    }
+    .overlay-nav ul li {
+      margin: 1em 0;
+    }
+    .overlay-nav ul li a {
+      font-size: 2rem;
+      color: #fff;
+      text-decoration: none;
+    }
+    .overlay-nav ul li a:hover {
+      text-decoration: underline;
+    }
+    /* Modal overlay (for footnotes and video) */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal.open {
+      display: flex;
+    }
+    .modal-content {
+      position: relative;
+      background: #222;
+      border: 1px solid #444;
+      padding: 1.5rem;
+      border-radius: 4px;
+      max-width: 800px;
+      max-height: 90%;
+      overflow-y: auto;
+      box-shadow: 0 0 10px #000;
+    }
+    .modal-content h2 {
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    .modal-content p {
+      color: #ddd;
+      margin-bottom: 1rem;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 15px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .modal-close:focus {
+      outline: 2px solid #fff;
+    }
+    /* Responsive video container for embeds */
+    .responsive-video {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #000;
+      margin-bottom: 1rem;
+    }
+    .responsive-video iframe, .responsive-video video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    /* Prevent background scroll when modal or nav is open */
+    body.no-scroll {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Landing Section -->
+  <header class="landing">
+    <h1>Footnotes of Creation</h1>
+    <p class="tagline">An immersive journey in notes and art</p>
+    <p class="teaser">
+      Explore the untold stories behind the scenes. Scroll down to begin.
+    </p>
+    <div class="scroll-cue">↓</div>
+  </header>
 
-/**
- * -----------------------------------------------------------------------------
- *  FOOTNOTES OF CREATION ▸ single-file demo (React + Tailwind + react-three-fiber)
- * -----------------------------------------------------------------------------
- *  – Minimal, production-ready scaffold that demonstrates overall IA + visuals
- *  – Uses three-js shader plane for subtle background movement
- *  – Responsive archive grid → modal viewer with video + rich text + footnotes
- *  – Designed to live at /src/App.jsx in a Vite or Next.js setup (just add data)
- *  – Tailwind styles assume the color palette in :root css variables matches
- *    user’s design system (void-black, aged-parchment, etc.)
- * -------------------------------------------------------------------------- */
+  <main>
+    <!-- Chapter 1 -->
+    <section class="chapter" id="chapter1">
+      <div class="chapter-content">
+        <div class="media scroll-reveal from-left">
+          <!-- Image or media placeholder (replace with actual media) -->
+        </div>
+        <div class="text scroll-reveal from-right">
+          <h2>Chapter 1: The Beginning</h2>
+          <p>
+            In the beginning, everything was shrouded in darkness and possibility. 
+            This chapter explores the origins of our story and the subtle hints of what is to come. 
+            The narrative unfolds with each scroll, revealing the layers of creation.
+            <a href="#" data-modal="footnote1" class="footnote-link" aria-label="Read Footnote 1">[1]</a>
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- Chapter 2 -->
+    <section class="chapter" id="chapter2">
+      <div class="chapter-content">
+        <div class="media scroll-reveal from-right">
+          <!-- Image or media placeholder -->
+        </div>
+        <div class="text scroll-reveal from-left">
+          <h2>Chapter 2: A New Light</h2>
+          <p>
+            As light breaks through, new forms begin to take shape. The journey through creation introduces vibrant scenes and evolving characters. 
+            Witness the transformation that leads to a world of color and life.
+            <button type="button" data-modal="video1" class="video-link">Watch Clip</button>
+          </p>
+        </div>
+      </div>
+    </section>
+    <!-- Chapter 3 -->
+    <section class="chapter" id="chapter3">
+      <div class="chapter-content">
+        <div class="media scroll-reveal from-left">
+          <!-- Image or media placeholder -->
+        </div>
+        <div class="text scroll-reveal from-right">
+          <h2>Chapter 3: Reflections</h2>
+          <p>
+            In the final chapter, reflections on creation and existence come to the forefront. Every element has meaning, and every footnote tells a story within the story. 
+            The journey ends where it began, bringing a deeper understanding of all that transpired.
+            <a href="#" data-modal="footnote2" class="footnote-link" aria-label="Read Footnote 2">[2]</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-/* ------------------------------------------------- 1. Demo data -------------*/
-//  Replace/thumb/video URLs w/ real assets; `text` can hold full chapter markup.
-const chapters = [
-  {
-    id: 1,
-    title: `In the Before, which is to say the Never-Quite-But-Almost`,
-    snippet: `There roll’d a sort of Clamor, a Cosmic Mutter ...`,
-    image: "/assets/ch1-thumb.jpg",
-    video: "/assets/ch1.mp4",
-    text: `
+  <!-- Overlay Navigation Menu -->
+  <nav class="overlay-nav" id="nav-menu" aria-hidden="true">
+    <ul>
+      <li><a href="#chapter1">Chapter 1</a></li>
+      <li><a href="#chapter2">Chapter 2</a></li>
+      <li><a href="#chapter3">Chapter 3</a></li>
+      <li><a href="#chapter1">Top</a></li>
+    </ul>
+  </nav>
+  <!-- Floating Menu Button (Hamburger) -->
+  <button class="menu-btn" aria-label="Toggle navigation menu">
+    <span class="bar1"></span>
+    <span class="bar2"></span>
+    <span class="bar3"></span>
+  </button>
 
-${`In the Before, which is to say ...`} `,
-  },
-  // ...push remaining chapters here
-];
-
-/* ----------------------------- 2. GLSL background plane --------------------*/
-function BackgroundPlane() {
-  const mesh = useRef();
-  useFrame(({ clock }) => {
-    mesh.current.material.uniforms.time.value = clock.getElapsedTime();
-  });
-  return (
-    <mesh ref={mesh} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -2]}>
-      <planeGeometry args={[100, 100, 128, 128]} />
-      <shaderMaterial
-        uniforms={{ time: { value: 0 } }}
-        vertexShader={`
-          uniform float time;
-          void main() {
-            vec3 p = position;
-            p.z += sin(p.x * 4.0 + time * 0.7) * 0.12;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
-          }
-        `}
-        fragmentShader={`
-          void main() {
-            gl_FragColor = vec4(0.05, 0.05, 0.10, 0.82);
-          }
-        `}
-        transparent
-      />
-    </mesh>
-  );
-}
-
-/* ----------------------------- 3. Footnote helper --------------------------*/
-//  Converts [[footnote text]] patterns → superscript tooltips.
-function FootnoteRender({ raw }) {
-  return raw.split(/\[\[(.*?)\]\]/g).map((chunk, i) =>
-    i % 2 ? (
-      <sup key={i} className="relative cursor-help group">
-        {i / 2}
-        <span className="absolute bottom-full mb-2 w-max max-w-xs px-3 py-2 text-xs bg-deep-moss text-aged-parchment rounded opacity-0 group-hover:opacity-100 transition">
-          {chunk}
-        </span>
-      </sup>
-    ) : (
-      <span key={i} dangerouslySetInnerHTML={{ __html: chunk }} />
-    ),
-  );
-}
-
-/* ----------------------------- 4. Main component ---------------------------*/
-export default function FootnotesOfCreationSite() {
-  const [open, setOpen] = useState(null);
-
-  // Disable body scroll while modal open
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "auto";
-  }, [open]);
-
-  return (
-    <div className="min-h-screen bg-void-black text-aged-parchment font-sans selection:bg-corrupted-blue/50">
-      {/* WebGL canvas backdrop */}
-      <Canvas className="fixed inset-0 -z-20" camera={{ position: [0, 0, 10] }}>
-        <ambientLight intensity={0.5} />
-        <BackgroundPlane />
-        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
-      </Canvas>
-
-      {/*  Header  */}
-      <header className="relative px-6 md:px-16 py-24 lg:py-32">
-        <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl leading-tight tracking-wide">
-          Footnotes of Creation
-        </h1>
-        <p className="mt-6 max-w-xl text-lg md:text-xl opacity-80">
-          An Unearthed Archive of Genesis, bureaucracy, and cosmic mischief.
-        </p>
-      </header>
-
-      {/* Archive grid */}
-      <main className="relative px-6 md:px-16 pb-32">
-        <section className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {chapters.map((c) => (
-            <motion.article
-              key={c.id}
-              whileHover={{ translateY: -6 }}
-              transition={{ type: "spring", stiffness: 220, damping: 25 }}
-              className="cursor-pointer group"
-              onClick={() => setOpen(c)}
-            >
-              <div className="aspect-video overflow-hidden rounded-2xl shadow-xl">
-                <img
-                  src={c.image}
-                  alt={c.title}
-                  className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <h2 className="mt-4 font-serif text-xl leading-snug group-hover:underline">
-                {c.title}
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed opacity-70">{c.snippet}</p>
-            </motion.article>
-          ))}
-        </section>
-      </main>
-
-      {/*  Modal viewer  */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 backdrop-blur-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setOpen(null)}
-          >
-            <motion.div
-              className="relative max-w-5xl w-[90%] bg-void-black rounded-3xl overflow-hidden shadow-2xl"
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <video
-                src={open.video}
-                autoPlay
-                loop
-                controls
-                className="w-full aspect-video object-cover"
-              />
-              <div className="p-8 overflow-y-auto max-h-[60vh] prose prose-invert">
-                <FootnoteRender raw={open.text} />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Footer */}
-      <footer className="relative px-6 md:px-16 py-12 text-xs opacity-60">
-        © {new Date().getFullYear()} Footnotes of Creation — All Rights Reserved.
-      </footer>
+  <!-- Footnote Modal 1 -->
+  <div class="modal" id="footnote1" role="dialog" aria-modal="true" aria-labelledby="footnote1-title">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close footnote">&times;</button>
+      <h2 id="footnote1-title">Footnote 1</h2>
+      <p>
+        This is the first footnote, providing additional context and background to Chapter 1’s narrative. 
+        It appears in a modal overlay for quick reference, allowing readers to stay in the flow of the story.
+      </p>
     </div>
-  );
-}
+  </div>
+  <!-- Footnote Modal 2 -->
+  <div class="modal" id="footnote2" role="dialog" aria-modal="true" aria-labelledby="footnote2-title">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close footnote">&times;</button>
+      <h2 id="footnote2-title">Footnote 2</h2>
+      <p>
+        This is the second footnote, offering deeper insight into the themes of Chapter 3. 
+        By reading this note, the audience gains a greater appreciation for the nuances of the story's conclusion.
+      </p>
+    </div>
+  </div>
+  <!-- Video Modal -->
+  <div class="modal" id="video1" role="dialog" aria-modal="true" aria-labelledby="video1-title">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close video">&times;</button>
+      <h2 id="video1-title">Sample Video Clip</h2>
+      <div class="responsive-video">
+        <!-- Embedded video placeholder (YouTube iframe example) -->
+        <iframe src="https://www.youtube.com/embed/TlP5WIxVirU" 
+                title="Placeholder Video Clip" frameborder="0" 
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+        </iframe>
+      </div>
+      <p style="text-align:center; font-size: 0.9rem; color: #aaa;">
+        (Video content placeholder – replace with actual video clip)
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // 1. Scroll-triggered animations using IntersectionObserver
+    (function() {
+      const scrollElements = document.querySelectorAll('.scroll-reveal');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              obs.unobserve(entry.target); // animate once
+            }
+          });
+        }, { threshold: 0.1 });
+        scrollElements.forEach(el => observer.observe(el));
+      } else {
+        // Fallback for browsers without IntersectionObserver
+        scrollElements.forEach(el => el.classList.add('active'));
+      }
+    })();
+
+    // 2. Overlay navigation menu toggle
+    const menuBtn = document.querySelector('.menu-btn');
+    const overlayNav = document.querySelector('.overlay-nav');
+    let navOpen = false;
+    menuBtn.addEventListener('click', () => {
+      navOpen = !navOpen;
+      menuBtn.classList.toggle('change', navOpen);
+      overlayNav.classList.toggle('open', navOpen);
+      document.body.classList.toggle('no-scroll', navOpen);
+      overlayNav.setAttribute('aria-hidden', navOpen ? 'false' : 'true');
+      if (navOpen) {
+        // When open, focus the first nav link for accessibility
+        const firstLink = overlayNav.querySelector('a');
+        if (firstLink) firstLink.focus();
+      } else {
+        // Return focus to menu button when closed
+        menuBtn.focus();
+      }
+    });
+    // Close nav overlay when a link is clicked (to navigate)
+    overlayNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navOpen = false;
+        menuBtn.classList.remove('change');
+        overlayNav.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+        overlayNav.setAttribute('aria-hidden', 'true');
+        // Focus not explicitly returned because user moved to a section anchor
+      });
+    });
+
+    // 3. Modal dialog functionality for footnotes and video
+    let lastFocusedElement = null;
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        lastFocusedElement = document.activeElement;
+        modal.classList.add('open');
+        document.body.classList.add('no-scroll');
+        // Focus the modal’s close button for easy access
+        const closeBtn = modal.querySelector('.modal-close');
+        if (closeBtn) closeBtn.focus();
+      }
+    }
+    function closeModal(modal) {
+      if (!modal) return;
+      if (typeof modal === 'string') {
+        modal = document.getElementById(modal);
+      }
+      modal.classList.remove('open');
+      document.body.classList.remove('no-scroll');
+      if (lastFocusedElement) {
+        lastFocusedElement.focus();  // restore focus to last trigger
+        lastFocusedElement = null;
+      }
+    }
+    // Open modals when trigger elements (footnote links, video button) are clicked
+    document.querySelectorAll('[data-modal]').forEach(trigger => {
+      trigger.addEventListener('click', e => {
+        e.preventDefault();
+        const modalId = trigger.getAttribute('data-modal');
+        openModal(modalId);
+      });
+    });
+    // Close modal when clicking outside content or on close button
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', e => {
+        if (e.target === modal) {
+          closeModal(modal);
+        }
+      });
+      const closeBtn = modal.querySelector('.modal-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => closeModal(modal));
+      }
+    });
+    // Global keyboard handler for Escape key (close modals/nav)
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        if (navOpen) {
+          // Close navigation if open
+          menuBtn.click();
+        } else {
+          // Close any open modal
+          const openModalEl = document.querySelector('.modal.open');
+          if (openModalEl) {
+            closeModal(openModalEl);
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
