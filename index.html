@@ -1,533 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Footnotes of Creation</title>
-  <style>
-    /* Basic reset and base styles */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      color: #f0f0f0;
-      background: #000;
-      /* Dark background for cinematic effect */
-      line-height: 1.6;
-    }
-    h1, h2, h3, h4 {
-      font-family: Georgia, serif;
-      margin: 0.5em 0;
-    }
-    p {
-      margin: 0.5em 0;
-    }
-    a {
-      color: #9ac7ff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    /* Landing (hero) section styles */
-    .landing {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      height: 100vh;
-      padding: 2rem;
-      background: #000 no-repeat center center;
-      background-size: cover;
-      /* A background image or video poster can be added for cinematic effect */
-    }
-    .landing h1 {
-      font-size: 3rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .landing .tagline {
-      font-size: 1.2rem;
-      color: #ccc;
-      margin-top: 0.5em;
-    }
-    .landing .teaser {
-      font-size: 1rem;
-      color: #888;
-      margin-top: 1em;
-      max-width: 600px;
-    }
-    .scroll-cue {
-      margin-top: 2em;
-      font-size: 2rem;
-      color: #fff;
-      opacity: 0.7;
-      animation: bounce 2s infinite;
-    }
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(10px); }
-      60% { transform: translateY(5px); }
-    }
-    /* Chapter sections container */
-    main {
-      /* main element wraps all chapters */
-    }
-    .chapter {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4rem 2rem;
-      min-height: 80vh;
-    }
-    .chapter:nth-child(even) {
-      background: #111;  /* slight variation for contrast */
-    }
-    .chapter:nth-child(odd) {
-      background: #000;
-    }
-    .chapter-content {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      max-width: 1200px;
-      width: 100%;
-    }
-    .chapter-content .media, .chapter-content .text {
-      flex: 1 1 500px;
-      margin: 1rem;
-    }
-    .chapter-content .media {
-      position: relative;
-      min-height: 300px;
-      background: linear-gradient(135deg, #333 0%, #111 100%);
-      overflow: hidden;
-      /* This div is a placeholder for images/videos; replace background or content as needed */
-    }
-    .chapter-content .media img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .chapter-content .media::after {
-      /* Placeholder label on media blocks */
-      content: "Media Placeholder";
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      color: #888;
-      font-size: 1rem;
-      font-style: italic;
-      pointer-events: none;
-    }
-    .chapter-content .text {
-      font-size: 1.1rem;
-      line-height: 1.8;
-    }
-    .chapter-content .text h2 {
-      font-size: 2rem;
-      margin-bottom: 0.5em;
-    }
-    /* Responsive adjustments for smaller screens */
-    @media (max-width: 768px) {
-      .chapter {
-        padding: 3rem 1rem;
-      }
-      .chapter-content {
-        flex-direction: column;
-      }
-      .chapter-content .media, .chapter-content .text {
-        flex: 1 1 auto;
-        margin: 0.5rem 0;
-      }
-      .chapter-content .text {
-        text-align: center;
-      }
-    }
-    /* Scroll-triggered reveal animations */
-    .scroll-reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.8s ease-out;
-    }
-    .scroll-reveal.from-left { transform: translateX(-50px); }
-    .scroll-reveal.from-right { transform: translateX(50px); }
-    .scroll-reveal.active {
-      opacity: 1;
-      transform: translate(0, 0);
-    }
-    /* Floating menu button (hamburger icon) */
-    .menu-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1001;
-      background: none;
-      border: none;
-      cursor: pointer;
-      outline: none;
-    }
-    .menu-btn .bar1, .menu-btn .bar2, .menu-btn .bar3 {
-      display: block;
-      width: 30px;
-      height: 4px;
-      background-color: #fff;
-      margin: 6px 0;
-      transition: 0.4s;
-    }
-    /* Hamburger to X icon transition */
-    .menu-btn.change .bar1 {
-      transform: translateY(10px) rotate(-45deg);
-    }
-    .menu-btn.change .bar2 {
-      opacity: 0;
-    }
-    .menu-btn.change .bar3 {
-      transform: translateY(-10px) rotate(45deg);
-    }
-    /* Full-screen overlay navigation styles */
-    .overlay-nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%; 
-      height: 100%;
-      background: rgba(0,0,0,0.9);
-      backdrop-filter: blur(5px);
-      opacity: 0;
-      visibility: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.5s ease;
-      z-index: 1000;
-    }
-    .overlay-nav.open {
-      opacity: 1;
-      visibility: visible;
-    }
-    .overlay-nav ul {
-      list-style: none;
-      padding: 0;
-      text-align: center;
-    }
-    .overlay-nav ul li {
-      margin: 1em 0;
-    }
-    .overlay-nav ul li a {
-      font-size: 2rem;
-      color: #fff;
-      text-decoration: none;
-    }
-    .overlay-nav ul li a:hover {
-      text-decoration: underline;
-    }
-    /* Modal overlay (for footnotes and video) */
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal.open {
-      display: flex;
-    }
-    .modal-content {
-      position: relative;
-      background: #222;
-      border: 1px solid #444;
-      padding: 1.5rem;
-      border-radius: 4px;
-      max-width: 800px;
-      max-height: 90%;
-      overflow-y: auto;
-      box-shadow: 0 0 10px #000;
-    }
-    .modal-content h2 {
-      font-size: 1.5rem;
-      margin-top: 0;
-      margin-bottom: 1rem;
-    }
-    .modal-content p {
-      color: #ddd;
-      margin-bottom: 1rem;
-    }
-    .modal-close {
-      position: absolute;
-      top: 10px; right: 15px;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .modal-close:focus {
-      outline: 2px solid #fff;
-    }
-    /* Responsive video container for embeds */
-    .responsive-video {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border: 1px solid #333;
-      border-radius: 4px;
-      background: #000;
-      margin-bottom: 1rem;
-    }
-    .responsive-video iframe, .responsive-video video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    /* Prevent background scroll when modal or nav is open */
-    body.no-scroll {
-      overflow: hidden;
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Footnotes of Creation • Archive</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<style>
+/* ------------- 1. RESET & ROOT ----------------- */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0b0c;            /* deep charcoal */
+  --card:#151516;
+  --stroke:#333;
+  --txt:#d7d7d7;
+  --muted:#888;
+  --accent:#53ff00;        /* CRT-green */
+  --ease:cubic-bezier(.25,.1,.25,1);
+  font-family: "Inter", system-ui, sans-serif;
+}
+html,body{height:100%;scroll-behavior:smooth;background:var(--bg);color:var(--txt)}
+body.no-scroll{overflow:hidden}
+
+/* ------------- 2. CUSTOM CURSOR ---------------- */
+#cursor,#follower{
+  position:fixed;top:0;left:0;pointer-events:none;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--accent);mix-blend-mode:difference;z-index:2000}
+#follower{width:24px;height:24px;transition:transform .15s var(--ease)}
+.hidden-cursor *{cursor:none}
+
+/* ------------- 3. NAV / FILTER ----------------- */
+header{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  background:#000a;backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.75rem 1rem;border-bottom:1px solid var(--stroke)}
+header h1{font-size:.85rem;letter-spacing:2px;color:var(--accent)}
+#filters{display:flex;gap:.8rem;font-size:.8rem}
+#filters button{
+  background:none;border:none;color:var(--txt);padding:.2rem .5rem;
+  cursor:pointer;font-weight:600;letter-spacing:1px}
+#filters button.active{color:var(--accent)}
+/* search icon placeholder */
+header .search{width:16px;height:16px;border:1px solid var(--accent)}
+
+/* ------------- 4. MAIN GRID -------------------- */
+main{padding:5.5rem 2vw}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1.5rem}
+.card{
+  position:relative;background:var(--card);border:1px solid var(--stroke);
+  cursor:pointer;transition:transform .3s var(--ease);}
+.card:hover{transform:translateY(-4px)}
+.card img{
+  width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+.card .meta{padding:.75rem;font-size:.75rem}
+.card .meta h3{font-size:1rem;font-weight:600;margin-bottom:.3rem}
+.tag{font-size:.65rem;color:var(--muted);text-transform:uppercase;}
+
+/* ------------- 5. OVERLAY PANEL ---------------- */
+#panel{
+  position:fixed;top:0;right:-100%;height:100%;width:40%;
+  min-width:300px;background:#111;box-shadow:0 0 40px #000a;
+  overflow-y:auto;transition:right .6s var(--ease);z-index:1100;
+  display:flex;flex-direction:column}
+#panel.open{right:0}
+#panel header{display:flex;justify-content:space-between;align-items:center;
+  padding:1rem;border-bottom:1px solid var(--stroke)}
+#panel header h2{font-size:1rem;color:var(--accent)}
+.close-btn{background:none;border:none;font-size:1.2rem;color:var(--txt);cursor:pointer}
+#panel .body{padding:1.25rem;font-size:.9rem;line-height:1.6}
+#panel .body video,#panel .body iframe{width:100%;aspect-ratio:16/9;margin:.7rem 0;border:none}
+#panel .footnotes{margin-top:1rem;border-top:1px dashed var(--stroke);padding-top:.7rem;font-size:.8rem;color:var(--muted)}
+
+/* ------------- 6. RESPONSIVE ------------------- */
+@media(max-width:680px){
+  #panel{width:100%}
+}
+</style>
 </head>
-<body>
-  <!-- Landing Section -->
-  <header class="landing">
-    <h1>Footnotes of Creation</h1>
-    <p class="tagline">An immersive journey in notes and art</p>
-    <p class="teaser">
-      Explore the untold stories behind the scenes. Scroll down to begin.
-    </p>
-    <div class="scroll-cue">↓</div>
-  </header>
+<body class="hidden-cursor">
 
-  <main>
-    <!-- Chapter 1 -->
-    <section class="chapter" id="chapter1">
-      <div class="chapter-content">
-        <div class="media scroll-reveal from-left">
-          <!-- Image or media placeholder (replace with actual media) -->
-        </div>
-        <div class="text scroll-reveal from-right">
-          <h2>Chapter 1: The Beginning</h2>
-          <p>
-            In the beginning, everything was shrouded in darkness and possibility. 
-            This chapter explores the origins of our story and the subtle hints of what is to come. 
-            The narrative unfolds with each scroll, revealing the layers of creation.
-            <a href="#" data-modal="footnote1" class="footnote-link" aria-label="Read Footnote 1">[1]</a>
-          </p>
-        </div>
-      </div>
-    </section>
-    <!-- Chapter 2 -->
-    <section class="chapter" id="chapter2">
-      <div class="chapter-content">
-        <div class="media scroll-reveal from-right">
-          <!-- Image or media placeholder -->
-        </div>
-        <div class="text scroll-reveal from-left">
-          <h2>Chapter 2: A New Light</h2>
-          <p>
-            As light breaks through, new forms begin to take shape. The journey through creation introduces vibrant scenes and evolving characters. 
-            Witness the transformation that leads to a world of color and life.
-            <button type="button" data-modal="video1" class="video-link">Watch Clip</button>
-          </p>
-        </div>
-      </div>
-    </section>
-    <!-- Chapter 3 -->
-    <section class="chapter" id="chapter3">
-      <div class="chapter-content">
-        <div class="media scroll-reveal from-left">
-          <!-- Image or media placeholder -->
-        </div>
-        <div class="text scroll-reveal from-right">
-          <h2>Chapter 3: Reflections</h2>
-          <p>
-            In the final chapter, reflections on creation and existence come to the forefront. Every element has meaning, and every footnote tells a story within the story. 
-            The journey ends where it began, bringing a deeper understanding of all that transpired.
-            <a href="#" data-modal="footnote2" class="footnote-link" aria-label="Read Footnote 2">[2]</a>
-          </p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Overlay Navigation Menu -->
-  <nav class="overlay-nav" id="nav-menu" aria-hidden="true">
-    <ul>
-      <li><a href="#chapter1">Chapter 1</a></li>
-      <li><a href="#chapter2">Chapter 2</a></li>
-      <li><a href="#chapter3">Chapter 3</a></li>
-      <li><a href="#chapter1">Top</a></li>
-    </ul>
+<!--  1. NAV BAR -->
+<header>
+  <h1>FOC • ARCHIVE</h1>
+  <nav id="filters" aria-label="Filter">
+    <button data-filter="all" class="active">all</button>
+    <button data-filter="vision">vision</button>
+    <button data-filter="text">text</button>
+    <button data-filter="promo">promo</button>
   </nav>
-  <!-- Floating Menu Button (Hamburger) -->
-  <button class="menu-btn" aria-label="Toggle navigation menu">
-    <span class="bar1"></span>
-    <span class="bar2"></span>
-    <span class="bar3"></span>
-  </button>
+  <div class="search" aria-hidden="true"></div>
+</header>
 
-  <!-- Footnote Modal 1 -->
-  <div class="modal" id="footnote1" role="dialog" aria-modal="true" aria-labelledby="footnote1-title">
-    <div class="modal-content">
-      <button class="modal-close" aria-label="Close footnote">&times;</button>
-      <h2 id="footnote1-title">Footnote 1</h2>
-      <p>
-        This is the first footnote, providing additional context and background to Chapter 1’s narrative. 
-        It appears in a modal overlay for quick reference, allowing readers to stay in the flow of the story.
-      </p>
-    </div>
-  </div>
-  <!-- Footnote Modal 2 -->
-  <div class="modal" id="footnote2" role="dialog" aria-modal="true" aria-labelledby="footnote2-title">
-    <div class="modal-content">
-      <button class="modal-close" aria-label="Close footnote">&times;</button>
-      <h2 id="footnote2-title">Footnote 2</h2>
-      <p>
-        This is the second footnote, offering deeper insight into the themes of Chapter 3. 
-        By reading this note, the audience gains a greater appreciation for the nuances of the story's conclusion.
-      </p>
-    </div>
-  </div>
-  <!-- Video Modal -->
-  <div class="modal" id="video1" role="dialog" aria-modal="true" aria-labelledby="video1-title">
-    <div class="modal-content">
-      <button class="modal-close" aria-label="Close video">&times;</button>
-      <h2 id="video1-title">Sample Video Clip</h2>
-      <div class="responsive-video">
-        <!-- Embedded video placeholder (YouTube iframe example) -->
-        <iframe src="https://www.youtube.com/embed/TlP5WIxVirU" 
-                title="Placeholder Video Clip" frameborder="0" 
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-        </iframe>
+<!--  2. GRID -->
+<main>
+  <section class="grid" id="grid">
+
+    <!--  CARD TEMPLATE  -->
+    <article class="card" data-tags="vision promo">
+      <img src="https://placehold.co/600x400/ff2e2e/000?text=Genesis+Poster" alt="Genesis Poster placeholder">
+      <div class="meta">
+        <span class="tag">Vision</span>
+        <h3>Genesis Key-Art</h3>
+        <span class="date">c. Day 0</span>
       </div>
-      <p style="text-align:center; font-size: 0.9rem; color: #aaa;">
-        (Video content placeholder – replace with actual video clip)
-      </p>
-    </div>
+    </article>
+
+    <article class="card" data-tags="text">
+      <img src="https://placehold.co/600x400/1e90ff/000?text=Chapter+Excerpt" alt="Text excerpt placeholder">
+      <div class="meta">
+        <span class="tag">Text</span>
+        <h3>Clamor in the Void</h3>
+        <span class="date">Fragment #134</span>
+      </div>
+    </article>
+
+    <article class="card" data-tags="promo">
+      <img src="https://placehold.co/600x400/00af64/000?text=Trailer+Thumb" alt="Video trailer placeholder">
+      <div class="meta">
+        <span class="tag">Promo</span>
+        <h3>30-sec Teaser</h3>
+        <span class="date">Now Playing</span>
+      </div>
+    </article>
+
+    <!--  Duplicate / add as many cards as you like with varying data-tags -->
+  </section>
+</main>
+
+<!--  3. SLIDE-IN PANEL -->
+<aside id="panel" aria-hidden="true">
+  <header>
+    <h2 id="panelTitle">Title</h2>
+    <button class="close-btn" aria-label="Close panel">&times;</button>
+  </header>
+  <div class="body" id="panelBody">
+    <!-- filled dynamically -->
   </div>
+</aside>
 
-  <script>
-    // 1. Scroll-triggered animations using IntersectionObserver
-    (function() {
-      const scrollElements = document.querySelectorAll('.scroll-reveal');
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries, obs) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('active');
-              obs.unobserve(entry.target); // animate once
-            }
-          });
-        }, { threshold: 0.1 });
-        scrollElements.forEach(el => observer.observe(el));
-      } else {
-        // Fallback for browsers without IntersectionObserver
-        scrollElements.forEach(el => el.classList.add('active'));
-      }
-    })();
+<!--  4. JS -->
+<script>
+/* ---------- CUSTOM CURSOR ---------- */
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('follower');
+let mouseX=0, mouseY=0;
+window.addEventListener('mousemove', e=>{
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.transform = `translate(${mouseX-4}px,${mouseY-4}px)`;
+});
+function lerp(a,b,n){ return(a+(b-a)*n);}
+let followX=0, followY=0;
+function animate(){ 
+  followX = lerp(followX, mouseX-12, 0.15);
+  followY = lerp(followY, mouseY-12, 0.15);
+  follower.style.transform=`translate(${followX}px,${followY}px)`; 
+  requestAnimationFrame(animate);
+}
+animate();
 
-    // 2. Overlay navigation menu toggle
-    const menuBtn = document.querySelector('.menu-btn');
-    const overlayNav = document.querySelector('.overlay-nav');
-    let navOpen = false;
-    menuBtn.addEventListener('click', () => {
-      navOpen = !navOpen;
-      menuBtn.classList.toggle('change', navOpen);
-      overlayNav.classList.toggle('open', navOpen);
-      document.body.classList.toggle('no-scroll', navOpen);
-      overlayNav.setAttribute('aria-hidden', navOpen ? 'false' : 'true');
-      if (navOpen) {
-        // When open, focus the first nav link for accessibility
-        const firstLink = overlayNav.querySelector('a');
-        if (firstLink) firstLink.focus();
-      } else {
-        // Return focus to menu button when closed
-        menuBtn.focus();
-      }
+/* ---------- FILTER LOGIC ---------- */
+const buttons = document.querySelectorAll('#filters button');
+const cards   = document.querySelectorAll('.card');
+buttons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    buttons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    cards.forEach(c=>{
+      c.style.display = (f==='all'||c.dataset.tags.includes(f))?'block':'none';
     });
-    // Close nav overlay when a link is clicked (to navigate)
-    overlayNav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navOpen = false;
-        menuBtn.classList.remove('change');
-        overlayNav.classList.remove('open');
-        document.body.classList.remove('no-scroll');
-        overlayNav.setAttribute('aria-hidden', 'true');
-        // Focus not explicitly returned because user moved to a section anchor
-      });
-    });
+  });
+});
 
-    // 3. Modal dialog functionality for footnotes and video
-    let lastFocusedElement = null;
-    function openModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        lastFocusedElement = document.activeElement;
-        modal.classList.add('open');
-        document.body.classList.add('no-scroll');
-        // Focus the modal’s close button for easy access
-        const closeBtn = modal.querySelector('.modal-close');
-        if (closeBtn) closeBtn.focus();
-      }
+/* ---------- PANEL LOGIC ---------- */
+const panel      = document.getElementById('panel');
+const panelTitle = document.getElementById('panelTitle');
+const panelBody  = document.getElementById('panelBody');
+function openPanel({title,html}){
+  panelTitle.textContent = title;
+  panelBody.innerHTML = html;
+  panel.classList.add('open');
+  panel.setAttribute('aria-hidden','false');
+  document.body.classList.add('no-scroll');
+}
+function closePanel(){
+  panel.classList.remove('open');
+  panel.setAttribute('aria-hidden','true');
+  document.body.classList.remove('no-scroll');
+}
+panel.querySelector('.close-btn').addEventListener('click', closePanel);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePanel();});
+
+/* ---------- CARD CLICK HANDLERS + DUMMY CONTENT ---------- */
+cards.forEach(c=>{
+  c.addEventListener('click',()=>{
+    const tag = c.dataset.tags.split(' ')[0];
+    let html  = '';
+    if(tag==='vision'){
+      html = `<p>High-resolution poster art that hints at the cosmic ‘broth of unknowing’. Replace this <em>img</em> with your key-art asset.</p>
+              <img src="https://placehold.co/800x600/ff2e2e/000?text=Full+Poster" alt="">
+              <div class="footnotes">Ⓕ Footnote 42 : Poster printed on theoretical photon-paper.</div>`;
+    }else if(tag==='text'){
+      html = `<p><strong>Excerpt&nbsp;— Clamor in the Void</strong></p>
+              <p>“In the Before, which is to say the Never-Quite-But-Almost, there roll’d a sort of Clamor…”</p>
+              <div class="footnotes">See also: <em>Drunkard’s Tall Tale</em>.</div>`;
+    }else{
+      html = `<div class="responsive-video">
+                <iframe src="https://www.youtube.com/embed/TlP5WIxVirU" title="Teaser"></iframe>
+              </div>
+              <p>Placeholder teaser clip. Swap the iframe src for your real promo video.</p>`;
     }
-    function closeModal(modal) {
-      if (!modal) return;
-      if (typeof modal === 'string') {
-        modal = document.getElementById(modal);
-      }
-      modal.classList.remove('open');
-      document.body.classList.remove('no-scroll');
-      if (lastFocusedElement) {
-        lastFocusedElement.focus();  // restore focus to last trigger
-        lastFocusedElement = null;
-      }
-    }
-    // Open modals when trigger elements (footnote links, video button) are clicked
-    document.querySelectorAll('[data-modal]').forEach(trigger => {
-      trigger.addEventListener('click', e => {
-        e.preventDefault();
-        const modalId = trigger.getAttribute('data-modal');
-        openModal(modalId);
-      });
-    });
-    // Close modal when clicking outside content or on close button
-    document.querySelectorAll('.modal').forEach(modal => {
-      modal.addEventListener('click', e => {
-        if (e.target === modal) {
-          closeModal(modal);
-        }
-      });
-      const closeBtn = modal.querySelector('.modal-close');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => closeModal(modal));
-      }
-    });
-    // Global keyboard handler for Escape key (close modals/nav)
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' || e.key === 'Esc') {
-        if (navOpen) {
-          // Close navigation if open
-          menuBtn.click();
-        } else {
-          // Close any open modal
-          const openModalEl = document.querySelector('.modal.open');
-          if (openModalEl) {
-            closeModal(openModalEl);
-          }
-        }
-      }
-    });
-  </script>
+    openPanel({title:c.querySelector('h3').textContent,html});
+  });
+});
+</script>
 </body>
 </html>
